@@ -1,0 +1,13 @@
+/Users/anafigueira/Documents/Estudos/FIAP/Pos/Hackathon/HealthMedDigitalSolutions/users/PosTech.Hackathon.Users.Domain/bin/Debug/net8.0/PosTech.Hackathon.Users.Domain.deps.json
+/Users/anafigueira/Documents/Estudos/FIAP/Pos/Hackathon/HealthMedDigitalSolutions/users/PosTech.Hackathon.Users.Domain/bin/Debug/net8.0/PosTech.Hackathon.Users.Domain.dll
+/Users/anafigueira/Documents/Estudos/FIAP/Pos/Hackathon/HealthMedDigitalSolutions/users/PosTech.Hackathon.Users.Domain/bin/Debug/net8.0/PosTech.Hackathon.Users.Domain.pdb
+/Users/anafigueira/Documents/Estudos/FIAP/Pos/Hackathon/HealthMedDigitalSolutions/users/PosTech.Hackathon.Users.Domain/obj/Debug/net8.0/PosTech.Hackathon.Users.Domain.csproj.AssemblyReference.cache
+/Users/anafigueira/Documents/Estudos/FIAP/Pos/Hackathon/HealthMedDigitalSolutions/users/PosTech.Hackathon.Users.Domain/obj/Debug/net8.0/PosTech.Hackathon.Users.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/Users/anafigueira/Documents/Estudos/FIAP/Pos/Hackathon/HealthMedDigitalSolutions/users/PosTech.Hackathon.Users.Domain/obj/Debug/net8.0/PosTech.Hackathon.Users.Domain.AssemblyInfoInputs.cache
+/Users/anafigueira/Documents/Estudos/FIAP/Pos/Hackathon/HealthMedDigitalSolutions/users/PosTech.Hackathon.Users.Domain/obj/Debug/net8.0/PosTech.Hackathon.Users.Domain.AssemblyInfo.cs
+/Users/anafigueira/Documents/Estudos/FIAP/Pos/Hackathon/HealthMedDigitalSolutions/users/PosTech.Hackathon.Users.Domain/obj/Debug/net8.0/PosTech.Hackathon.Users.Domain.csproj.CoreCompileInputs.cache
+/Users/anafigueira/Documents/Estudos/FIAP/Pos/Hackathon/HealthMedDigitalSolutions/users/PosTech.Hackathon.Users.Domain/obj/Debug/net8.0/PosTech.Hackathon.Users.Domain.sourcelink.json
+/Users/anafigueira/Documents/Estudos/FIAP/Pos/Hackathon/HealthMedDigitalSolutions/users/PosTech.Hackathon.Users.Domain/obj/Debug/net8.0/PosTech.Hackathon.Users.Domain.dll
+/Users/anafigueira/Documents/Estudos/FIAP/Pos/Hackathon/HealthMedDigitalSolutions/users/PosTech.Hackathon.Users.Domain/obj/Debug/net8.0/refint/PosTech.Hackathon.Users.Domain.dll
+/Users/anafigueira/Documents/Estudos/FIAP/Pos/Hackathon/HealthMedDigitalSolutions/users/PosTech.Hackathon.Users.Domain/obj/Debug/net8.0/PosTech.Hackathon.Users.Domain.pdb
+/Users/anafigueira/Documents/Estudos/FIAP/Pos/Hackathon/HealthMedDigitalSolutions/users/PosTech.Hackathon.Users.Domain/obj/Debug/net8.0/ref/PosTech.Hackathon.Users.Domain.dll
