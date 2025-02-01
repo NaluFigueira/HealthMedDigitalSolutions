@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="../build/PosTech.Hackathon.Users.Api.props" />
+</Project>
