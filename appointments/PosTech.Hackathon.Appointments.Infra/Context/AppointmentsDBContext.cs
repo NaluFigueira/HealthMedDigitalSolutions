@@ -27,6 +27,61 @@ public class AppointmentsDBContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        // Additional configuration if needed
+        
+        modelBuilder.Entity<Doctor>(entity =>
+        {
+            entity.ToTable("Doctors");
+
+            entity.HasKey(e => e.Id);
+
+            entity.Property(e => e.Name)
+                .HasColumnName("Name")
+                .HasColumnType("NVARCHAR(250)")
+                .IsRequired()
+                .HasMaxLength(250);
+            
+            entity.Property(e => e.Email)
+                .HasColumnName("Email")
+                .HasColumnType("NVARCHAR(250)")
+                .IsRequired()
+                .HasMaxLength(250);
+            
+            entity.Property(e => e.CRM)
+                .HasColumnName("CRM")
+                .HasColumnType("NVARCHAR(20)")
+                .IsRequired()
+                .HasMaxLength(20);
+
+            entity.Property(e => e.CPF)
+                .HasColumnName("CPF")
+                .HasColumnType("NVARCHAR(11)")
+                .IsRequired()
+                .HasMaxLength(11);
+        });
+        
+        modelBuilder.Entity<Patient>(entity =>
+        {
+            entity.ToTable("Patients");
+
+            entity.HasKey(e => e.Id);
+
+            entity.Property(e => e.Name)
+                .HasColumnName("Name")
+                .HasColumnType("NVARCHAR(250)")
+                .IsRequired()
+                .HasMaxLength(250);
+            
+            entity.Property(e => e.Email)
+                .HasColumnName("Email")
+                .HasColumnType("NVARCHAR(250)")
+                .IsRequired()
+                .HasMaxLength(250);
+
+            entity.Property(e => e.CPF)
+                .HasColumnName("CPF")
+                .HasColumnType("NVARCHAR(11)")
+                .IsRequired()
+                .HasMaxLength(11);
+        });
     }
 }

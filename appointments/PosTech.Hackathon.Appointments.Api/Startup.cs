@@ -21,6 +21,7 @@ public class Startup(IConfiguration configuration)
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
         services.AddAppointmentUseCases();
+        services.RegisterConsumers();
     }
 
     public void Configure(IApplicationBuilder app)
