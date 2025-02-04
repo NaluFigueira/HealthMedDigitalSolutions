@@ -54,9 +54,9 @@ public class AppointmentsDBContext : DbContext
 
             entity.Property(e => e.CPF)
                 .HasColumnName("CPF")
-                .HasColumnType("NVARCHAR(11)")
+                .HasColumnType("NVARCHAR(14)")
                 .IsRequired()
-                .HasMaxLength(11);
+                .HasMaxLength(14);
         });
         
         modelBuilder.Entity<Patient>(entity =>
@@ -79,9 +79,9 @@ public class AppointmentsDBContext : DbContext
 
             entity.Property(e => e.CPF)
                 .HasColumnName("CPF")
-                .HasColumnType("NVARCHAR(11)")
+                .HasColumnType("NVARCHAR(14)")
                 .IsRequired()
-                .HasMaxLength(11);
+                .HasMaxLength(14);
         });
     }
 }

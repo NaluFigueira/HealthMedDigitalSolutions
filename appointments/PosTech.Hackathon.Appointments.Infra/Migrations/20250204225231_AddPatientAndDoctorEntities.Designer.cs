@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PosTech.Hackathon.Appointments.Infra.Context;
 
@@ -11,9 +12,11 @@ using PosTech.Hackathon.Appointments.Infra.Context;
 namespace PosTech.Hackathon.Appointments.Infra.Migrations
 {
     [DbContext(typeof(AppointmentsDBContext))]
-    partial class AppointmentsDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250204225231_AddPatientAndDoctorEntities")]
+    partial class AddPatientAndDoctorEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,8 +50,8 @@ namespace PosTech.Hackathon.Appointments.Infra.Migrations
 
                     b.Property<string>("CPF")
                         .IsRequired()
-                        .HasMaxLength(14)
-                        .HasColumnType("NVARCHAR(14)")
+                        .HasMaxLength(11)
+                        .HasColumnType("NVARCHAR(11)")
                         .HasColumnName("CPF");
 
                     b.Property<string>("CRM")
@@ -82,8 +85,8 @@ namespace PosTech.Hackathon.Appointments.Infra.Migrations
 
                     b.Property<string>("CPF")
                         .IsRequired()
-                        .HasMaxLength(14)
-                        .HasColumnType("NVARCHAR(14)")
+                        .HasMaxLength(11)
+                        .HasColumnType("NVARCHAR(11)")
                         .HasColumnName("CPF");
 
                     b.Property<string>("Email")

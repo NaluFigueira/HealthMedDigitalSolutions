@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PosTech.Hackathon.Appointments.Infra.Context;
 
@@ -11,9 +12,11 @@ using PosTech.Hackathon.Appointments.Infra.Context;
 namespace PosTech.Hackathon.Appointments.Infra.Migrations
 {
     [DbContext(typeof(AppointmentsDBContext))]
-    partial class AppointmentsDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250204231223_ChangeCpfMaxValue")]
+    partial class ChangeCpfMaxValue
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
