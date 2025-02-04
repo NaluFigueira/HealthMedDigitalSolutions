@@ -5,22 +5,21 @@
 A aplicação tem como principal objetivo possibilitar o agendamento de consultas médicas, com as seguintes funcionalidades:
 
 - Permitir o cadastro de novos médicos e pacientes.
-- O paciente terá acesso ao catálogo de médicos disponíveis na plataforma, e às suas respectivas agendas. Podendo agendar uma consulta a qualquer momento, recebendo a confirmação por e-mail.
+- O paciente terá acesso ao catálogo de médicos disponíveis na plataforma, e às suas respectivas agendas. Podendo agendar uma consulta a qualquer momento, recebendo a confirmação por e-mail, após o médico confirmar.
+- O paciente pode cancelar uma consulta a qualquer momento.
 
 ## Solução proposta
 
 ### Arquitetura da solução
-![Arquitetura de solução](https://github.com/user-attachments/assets/b37f1634-7508-4814-bb1f-6ce536399a0f)
+![Arquitetura da solução](https://github.com/user-attachments/assets/505b27e6-ed5f-4ef3-b254-fed46005d308)
 
 ### Arquitetura técnica
-
 ![Arquitetura técnica](https://github.com/user-attachments/assets/587b6ad6-fc3e-4045-9b97-e6eb6127844d)
 
 ### Arquitetura de dados
-![Arquitetura de dados](https://github.com/user-attachments/assets/57f599aa-58df-4d56-ad22-6bcff7746576)
+![Arquitetura de dados](https://github.com/user-attachments/assets/d2242c6b-7687-4615-bdf3-a774ca23619d)
 
 ### Processo de desenvolvimento
-
 ![Processo de desenvolvimento](https://github.com/user-attachments/assets/ef6f9009-f6ee-429c-a111-50d01f06da1e)
 
 ## Tecnologias e ferramentas
