@@ -1,4 +1,5 @@
 using PosTech.Hackathon.Users.Application.Interfaces.UseCases;
+using PosTech.Hackathon.Users.Application.UseCases.Authentication;
 using PosTech.Hackathon.Users.Application.UseCases.Authentications;
 using PosTech.Hackathon.Users.Application.UseCases.Doctor;
 
@@ -16,7 +17,8 @@ public static class DependencyInjectionExtensions
 
     public static IServiceCollection AddAuthenticationUseCases(this IServiceCollection services)
     {
-        services.AddScoped<ILoginUseCase, LoginUseCase>();
+        services.AddScoped<IDoctorLoginUseCase, DoctorLoginUseCase>();
+        services.AddScoped<IPatientLoginUseCase, PatientLoginUseCase>();
 
         return services;
     }

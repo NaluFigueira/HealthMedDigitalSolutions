@@ -11,6 +11,8 @@ public class DoctorBuilder
     public string Name { get; set; }
     public string CRM { get; set; }
     public string CPF { get; set; }
+    public double AppointmentValue { get; set; }
+    public string Specialty { get; set; }
 
     public DoctorBuilder()
     {
@@ -20,6 +22,8 @@ public class DoctorBuilder
         Email = faker.Internet.Email();
         CRM = "123456-XX";
         CPF = faker.Person.Cpf();
+        AppointmentValue = faker.Random.Number(10, 1000);
+        Specialty = "Specialty";
     }
 
 
@@ -58,11 +62,13 @@ public class DoctorBuilder
     {
         return new Doctor
         {
-            UserId = UserId,
+            Id = UserId,
             Name = Name,
             Email = Email,
             CPF = CPF,
             CRM = CRM,
+            AppointmentValue = AppointmentValue,
+            Specialty = Specialty,
         };
     }
 }

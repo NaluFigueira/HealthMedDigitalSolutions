@@ -19,13 +19,21 @@ public class CreateDoctorDTOValidator : AbstractValidator<CreateDoctorDTO>
                         .NotEmpty()
                         .WithMessage("Email is required.");
 
+                RuleFor(user => user.CRM)
+                        .NotEmpty()
+                        .WithMessage("CRM is required.");
+
                 RuleFor(user => user.CPF)
                         .NotEmpty()
                         .WithMessage("CPF is required.");
 
-                RuleFor(user => user.CRM)
+                RuleFor(user => user.AppointmentValue)
+                        .GreaterThan(0)
+                        .WithMessage("AppointmentValue is required.");
+
+                RuleFor(user => user.Specialty)
                         .NotEmpty()
-                        .WithMessage("CRM is required.");
+                        .WithMessage("Specialty is required.");
 
                 RuleFor(user => user.Password)
                         .NotEmpty()

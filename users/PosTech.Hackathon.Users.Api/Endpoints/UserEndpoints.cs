@@ -35,6 +35,8 @@ public static class UserEndpoints
                                 Name = "Doctor Default",
                                 CPF = "447.137.070-74",
                                 CRM = "123456-SP",
+                                AppointmentValue = 150,
+                                Specialty = "Specialty",
                             })),
                         }
                     }

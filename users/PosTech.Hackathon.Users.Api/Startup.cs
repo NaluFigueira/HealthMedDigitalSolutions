@@ -2,6 +2,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PosTech.Hackathon.Users.Api.Configuration;
@@ -22,13 +23,29 @@ public class Startup(IConfiguration configuration)
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddControllers();
-        services.AddDbContext<UserDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")),
-            ServiceLifetime.Scoped
-        );
-        services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<UserDbContext>()
-                .AddDefaultTokenProviders();
+        services.AddDbContext<DoctorUserDbContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")),
+            ServiceLifetime.Scoped);
+
+
+        services.AddDbContext<PatientUsersDBContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")),
+                    ServiceLifetime.Scoped);
+
+        services.AddIdentityCore<DoctorUser>(options => { })
+            .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<DoctorUserDbContext>()
+            .AddUserManager<UserManager<DoctorUser>>()  // <-- Adiciona UserManager
+            .AddSignInManager<SignInManager<DoctorUser>>()  // <-- Adiciona SignInManager
+            .AddDefaultTokenProviders();  // <-- Garante suporte a tokens de autenticação
+
+        services.AddIdentityCore<PatientUser>(options => { })
+            .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<PatientUsersDBContext>()
+            .AddUserManager<UserManager<PatientUser>>()  // <-- Adiciona UserManager
+            .AddSignInManager<SignInManager<PatientUser>>()  // <-- Adiciona SignInManager
+            .AddDefaultTokenProviders();  // <-- Garante suporte a tokens de autenticação
+
         services.AddScoped<IProducer, Producer>();
         services.AddScoped<ITokenService, TokenService>();
         services.AddLogging();
@@ -40,6 +57,14 @@ public class Startup(IConfiguration configuration)
                     ValidateAudience = false,
                     ValidateIssuer = false,
                     ClockSkew = TimeSpan.Zero
+                })
+                .AddCookie("DoctorUserSchema", options =>
+                {
+                    options.LoginPath = "/doctors/login";
+                })
+                .AddCookie("PatientUserSchema", options =>
+                {
+                    options.LoginPath = "/patients/login";
                 });
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();

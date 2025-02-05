@@ -9,17 +9,18 @@ using PosTech.Hackathon.Users.Infra.Context;
 
 #nullable disable
 
-namespace PosTech.Hackathon.Users.Infra.Migrations
+namespace PosTech.Hackathon.Users.Infra.Migrations.PatientUsersDB
 {
-    [DbContext(typeof(UserDbContext))]
-    [Migration("20250131223636_InitialCreate")]
-    partial class InitialCreate
+    [DbContext(typeof(PatientUsersDBContext))]
+    [Migration("20250205013141_PatientUsers")]
+    partial class PatientUsers
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("PatientUserSchema")
                 .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
@@ -49,7 +50,7 @@ namespace PosTech.Hackathon.Users.Infra.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("AspNetRoles", "PatientUserSchema");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -74,7 +75,7 @@ namespace PosTech.Hackathon.Users.Infra.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims", (string)null);
+                    b.ToTable("AspNetRoleClaims", "PatientUserSchema");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -99,7 +100,7 @@ namespace PosTech.Hackathon.Users.Infra.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims", (string)null);
+                    b.ToTable("AspNetUserClaims", "PatientUserSchema");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -121,7 +122,7 @@ namespace PosTech.Hackathon.Users.Infra.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins", (string)null);
+                    b.ToTable("AspNetUserLogins", "PatientUserSchema");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -136,7 +137,7 @@ namespace PosTech.Hackathon.Users.Infra.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles", (string)null);
+                    b.ToTable("AspNetUserRoles", "PatientUserSchema");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -155,16 +156,20 @@ namespace PosTech.Hackathon.Users.Infra.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens", (string)null);
+                    b.ToTable("AspNetUserTokens", "PatientUserSchema");
                 });
 
-            modelBuilder.Entity("PosTech.Hackathon.Users.Domain.Entities.User", b =>
+            modelBuilder.Entity("PosTech.Hackathon.Users.Domain.Entities.PatientUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<string>("CPF")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -182,6 +187,10 @@ namespace PosTech.Hackathon.Users.Infra.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -220,7 +229,7 @@ namespace PosTech.Hackathon.Users.Infra.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.ToTable("AspNetUsers", "PatientUserSchema");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -234,7 +243,7 @@ namespace PosTech.Hackathon.Users.Infra.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("PosTech.Hackathon.Users.Domain.Entities.User", null)
+                    b.HasOne("PosTech.Hackathon.Users.Domain.Entities.PatientUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -243,7 +252,7 @@ namespace PosTech.Hackathon.Users.Infra.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("PosTech.Hackathon.Users.Domain.Entities.User", null)
+                    b.HasOne("PosTech.Hackathon.Users.Domain.Entities.PatientUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -258,7 +267,7 @@ namespace PosTech.Hackathon.Users.Infra.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PosTech.Hackathon.Users.Domain.Entities.User", null)
+                    b.HasOne("PosTech.Hackathon.Users.Domain.Entities.PatientUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -267,7 +276,7 @@ namespace PosTech.Hackathon.Users.Infra.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("PosTech.Hackathon.Users.Domain.Entities.User", null)
+                    b.HasOne("PosTech.Hackathon.Users.Domain.Entities.PatientUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

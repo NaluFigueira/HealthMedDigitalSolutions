@@ -8,22 +8,22 @@ using PosTech.Hackathon.Users.Domain.Entities;
 
 namespace PosTech.Hackathon.Users.Application.UseCases.Authentications;
 
-public class LoginUseCase(
-    ILogger<ILoginUseCase> logger,
-    SignInManager<User> signInManager,
+public class DoctorLoginUseCase(
+    ILogger<IDoctorLoginUseCase> logger,
+    SignInManager<DoctorUser> signInManager,
     ITokenService tokenService
-) : ILoginUseCase
+) : IDoctorLoginUseCase
 {
-    private readonly ILogger<ILoginUseCase> _logger = logger;
-    private readonly SignInManager<User> _signInManager = signInManager;
+    private readonly ILogger<IDoctorLoginUseCase> _logger = logger;
+    private readonly SignInManager<DoctorUser> _signInManager = signInManager;
     private readonly ITokenService _tokenService = tokenService;
 
-    public async Task<Result<string>> ExecuteAsync(LoginDTO request)
+    public async Task<Result<string>> ExecuteAsync(DoctorLoginDTO request)
     {
         var user = _signInManager
                 .UserManager
                 .Users
-                .FirstOrDefault(user => user.NormalizedUserName == request.UserName.ToUpper());
+                .FirstOrDefault(user => user.CRM == request.CRM.ToUpper());
 
         if (user == null)
         {
@@ -32,7 +32,7 @@ public class LoginUseCase(
             return Result.Fail([error]);
         }
 
-        var result = await _signInManager.PasswordSignInAsync(request.UserName, request.Password, false, false);
+        var result = await _signInManager.PasswordSignInAsync(request.CRM, request.Password, false, false);
 
         if (!result.Succeeded)
         {

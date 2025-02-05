@@ -12,6 +12,8 @@ public class CreateDoctorDTOBuilder
     public string Name { get; set; }
     public string CRM { get; set; }
     public string CPF { get; set; }
+    public double AppointmentValue { get; set; }
+    public string Specialty { get; set; }
     public string Password { get; set; }
     public string RePassword { get; set; }
 
@@ -23,6 +25,8 @@ public class CreateDoctorDTOBuilder
         Email = faker.Internet.Email();
         CRM = "123456-XX";
         CPF = faker.Person.Cpf();
+        AppointmentValue = faker.Random.Number(10, 1000);
+        Specialty = "Specialty";
         Password = faker.Internet.Password();
         RePassword = Password;
     }
@@ -58,6 +62,18 @@ public class CreateDoctorDTOBuilder
         return this;
     }
 
+    public CreateDoctorDTOBuilder WithAppointmentValue(double appointmentvalue)
+    {
+        AppointmentValue = appointmentvalue;
+        return this;
+    }
+
+    public CreateDoctorDTOBuilder WithSpecialty(string specialty)
+    {
+        Specialty = specialty;
+        return this;
+    }
+
     public CreateDoctorDTOBuilder WithPassword(string password)
     {
         Password = password;
@@ -80,6 +96,8 @@ public class CreateDoctorDTOBuilder
             Email = Email,
             CPF = CPF,
             CRM = CRM,
+            AppointmentValue = AppointmentValue,
+            Specialty = Specialty,
             Password = Password,
             RePassword = RePassword,
         };

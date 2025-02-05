@@ -11,16 +11,16 @@ using PosTech.Hackathon.Users.Tests.Builders;
 
 namespace PosTech.Hackathon.Users.Tests.Unit;
 
-public class LoginUseCaseTest
+public class DoctorLoginUseCaseTest
 {
-    private Mock<SignInManager<User>> _mockSignManager;
+    private Mock<SignInManager<DoctorUser>> _mockSignManager;
     private readonly Mock<ITokenService> _mockTokenService;
 
-    public LoginUseCaseTest()
+    public DoctorLoginUseCaseTest()
     {
-        var mockUserManager = new Mock<UserManager<User>>(Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
+        var mockUserManager = new Mock<UserManager<DoctorUser>>(Mock.Of<IUserStore<DoctorUser>>(), null, null, null, null, null, null, null, null);
 
-        _mockSignManager = new Mock<SignInManager<User>>(mockUserManager.Object);
+        _mockSignManager = new Mock<SignInManager<DoctorUser>>(mockUserManager.Object);
 
         _mockTokenService = new Mock<ITokenService>();
     }
@@ -29,18 +29,18 @@ public class LoginUseCaseTest
     public async Task ExecuteAsync_WhenValidRequest_ShouldReturnOk()
     {
         // Arrange
-        var mockLogger = new Mock<ILogger<ILoginUseCase>>();
+        var mockLogger = new Mock<ILogger<IDoctorLoginUseCase>>();
 
-        var request = new LoginDTOBuilder().Build();
+        var request = new DoctorLoginDTOBuilder().Build();
 
-        var user = new UserBuilder().WithUserName(request.UserName).WithNormalizedUserName(request.UserName.ToUpper()).Build();
+        var user = new DoctorUserBuilder().WithCRM(request.CRM).Build();
 
-        var mockUserManager = new Mock<UserManager<User>>(Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
+        var mockUserManager = new Mock<UserManager<DoctorUser>>(Mock.Of<IUserStore<DoctorUser>>(), null, null, null, null, null, null, null, null);
         mockUserManager
             .Setup(m => m.Users)
-            .Returns(new List<User> { user }.AsQueryable());
+            .Returns(new List<DoctorUser> { user }.AsQueryable());
 
-        _mockSignManager = new Mock<SignInManager<User>>(mockUserManager.Object, Mock.Of<IHttpContextAccessor>(), Mock.Of<IUserClaimsPrincipalFactory<User>>(), null, null, null);
+        _mockSignManager = new Mock<SignInManager<DoctorUser>>(mockUserManager.Object, Mock.Of<IHttpContextAccessor>(), Mock.Of<IUserClaimsPrincipalFactory<DoctorUser>>(), null, null, null);
 
         _mockSignManager
             .Setup(m => m.PasswordSignInAsync(
@@ -51,10 +51,10 @@ public class LoginUseCaseTest
             .ReturnsAsync(SignInResult.Success);
 
         _mockTokenService
-            .Setup(m => m.GenerateToken(It.IsAny<User>()))
+            .Setup(m => m.GenerateToken(It.IsAny<DoctorUser>()))
             .Returns("test");
 
-        var useCase = new LoginUseCase(mockLogger.Object, _mockSignManager.Object, _mockTokenService.Object);
+        var useCase = new DoctorLoginUseCase(mockLogger.Object, _mockSignManager.Object, _mockTokenService.Object);
 
         // Act
         var result = await useCase.ExecuteAsync(request);
@@ -65,31 +65,31 @@ public class LoginUseCaseTest
         result.Value.Should().NotBeNullOrEmpty();
 
         _mockSignManager.Verify(repo => repo.PasswordSignInAsync(
-            It.Is<string>(u => u == request.UserName),
+            It.Is<string>(u => u == request.CRM),
             It.Is<string>(p => p == request.Password),
             It.Is<bool>(isPersistent => isPersistent == false),
             It.Is<bool>(lockoutOnFailure => lockoutOnFailure == false)
         ), Times.Once());
 
-        _mockTokenService.Verify(repo => repo.GenerateToken(It.Is<User>(user => user.UserName == request.UserName)), Times.Once());
+        _mockTokenService.Verify(repo => repo.GenerateToken(It.Is<DoctorUser>(user => user.CRM == request.CRM)), Times.Once());
     }
 
     [Fact]
     public async Task ExecuteAsync_WhenManagersFails_ShouldReturnResultFail()
     {
         // Arrange
-        var mockLogger = new Mock<ILogger<LoginUseCase>>();
+        var mockLogger = new Mock<ILogger<DoctorLoginUseCase>>();
 
-        var request = new LoginDTOBuilder().Build();
+        var request = new DoctorLoginDTOBuilder().Build();
 
-        var user = new UserBuilder().WithUserName(request.UserName).WithNormalizedUserName(request.UserName.ToUpper()).Build();
+        var user = new DoctorUserBuilder().WithCRM(request.CRM).Build();
 
-        var mockUserManager = new Mock<UserManager<User>>(Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
+        var mockUserManager = new Mock<UserManager<DoctorUser>>(Mock.Of<IUserStore<DoctorUser>>(), null, null, null, null, null, null, null, null);
         mockUserManager
             .Setup(m => m.Users)
-            .Returns(new List<User> { user }.AsQueryable());
+            .Returns(new List<DoctorUser> { user }.AsQueryable());
 
-        _mockSignManager = new Mock<SignInManager<User>>(mockUserManager.Object, Mock.Of<IHttpContextAccessor>(), Mock.Of<IUserClaimsPrincipalFactory<User>>(), null, null, null);
+        _mockSignManager = new Mock<SignInManager<DoctorUser>>(mockUserManager.Object, Mock.Of<IHttpContextAccessor>(), Mock.Of<IUserClaimsPrincipalFactory<DoctorUser>>(), null, null, null);
 
         _mockSignManager
             .Setup(m => m.PasswordSignInAsync(
@@ -99,7 +99,7 @@ public class LoginUseCaseTest
                             It.IsAny<bool>()))
             .ReturnsAsync(SignInResult.Failed);
 
-        var useCase = new LoginUseCase(mockLogger.Object, _mockSignManager.Object, _mockTokenService.Object);
+        var useCase = new DoctorLoginUseCase(mockLogger.Object, _mockSignManager.Object, _mockTokenService.Object);
 
         // Act
         var result = await useCase.ExecuteAsync(request);
@@ -109,29 +109,29 @@ public class LoginUseCaseTest
         result.IsSuccess.Should().BeFalse();
 
         _mockSignManager.Verify(repo => repo.PasswordSignInAsync(
-            It.Is<string>(u => u == request.UserName),
+            It.Is<string>(u => u == request.CRM),
             It.Is<string>(p => p == request.Password),
             It.Is<bool>(isPersistent => isPersistent == false),
             It.Is<bool>(lockoutOnFailure => lockoutOnFailure == false)
         ), Times.Once());
-        _mockTokenService.Verify(repo => repo.GenerateToken(It.Is<User>(user => user.UserName == request.UserName)), Times.Never());
+        _mockTokenService.Verify(repo => repo.GenerateToken(It.Is<DoctorUser>(user => user.CRM == request.CRM)), Times.Never());
     }
 
     [Fact]
     public async Task ExecuteAsync_WhenUserNotFound_ShouldReturnResultFail()
     {
         // Arrange
-        var mockLogger = new Mock<ILogger<LoginUseCase>>();
+        var mockLogger = new Mock<ILogger<DoctorLoginUseCase>>();
 
-        var request = new LoginDTOBuilder().Build();
+        var request = new DoctorLoginDTOBuilder().Build();
 
-        var mockUserManager = new Mock<UserManager<User>>(Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
+        var mockUserManager = new Mock<UserManager<DoctorUser>>(Mock.Of<IUserStore<DoctorUser>>(), null, null, null, null, null, null, null, null);
         mockUserManager
             .Setup(m => m.Users)
-            .Returns(new List<User>().AsQueryable());
-        _mockSignManager = new Mock<SignInManager<User>>(mockUserManager.Object, Mock.Of<IHttpContextAccessor>(), Mock.Of<IUserClaimsPrincipalFactory<User>>(), null, null, null);
+            .Returns(new List<DoctorUser>().AsQueryable());
+        _mockSignManager = new Mock<SignInManager<DoctorUser>>(mockUserManager.Object, Mock.Of<IHttpContextAccessor>(), Mock.Of<IUserClaimsPrincipalFactory<DoctorUser>>(), null, null, null);
 
-        var useCase = new LoginUseCase(mockLogger.Object, _mockSignManager.Object, _mockTokenService.Object);
+        var useCase = new DoctorLoginUseCase(mockLogger.Object, _mockSignManager.Object, _mockTokenService.Object);
 
         // Act
         var result = await useCase.ExecuteAsync(request);
@@ -146,6 +146,6 @@ public class LoginUseCaseTest
             It.IsAny<bool>(),
             It.IsAny<bool>()
         ), Times.Never());
-        _mockTokenService.Verify(repo => repo.GenerateToken(It.IsAny<User>()), Times.Never());
+        _mockTokenService.Verify(repo => repo.GenerateToken(It.IsAny<DoctorUser>()), Times.Never());
     }
 }

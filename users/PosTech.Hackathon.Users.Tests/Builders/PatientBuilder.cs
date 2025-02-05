@@ -50,7 +50,7 @@ public class PatientBuilder
     {
         return new Patient
         {
-            UserId = UserId,
+            Id = UserId,
             Name = Name,
             Email = Email,
             CPF = CPF,

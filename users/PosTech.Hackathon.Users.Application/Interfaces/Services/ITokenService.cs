@@ -1,9 +1,8 @@
-using System;
-using PosTech.Hackathon.Users.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace PosTech.Hackathon.Users.Application.Interfaces.Services;
 
 public interface ITokenService
 {
-    string GenerateToken(User user);
+    string GenerateToken(IdentityUser user);
 }

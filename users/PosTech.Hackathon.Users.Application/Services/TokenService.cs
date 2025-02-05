@@ -1,15 +1,15 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using PosTech.Hackathon.Users.Application.Interfaces.Services;
-using PosTech.Hackathon.Users.Domain.Entities;
 
 namespace PosTech.Hackathon.Users.Application.Services;
 
 public class TokenService : ITokenService
 {
-    public string GenerateToken(User user)
+    public string GenerateToken(IdentityUser user)
     {
         Claim[] claims =
         [

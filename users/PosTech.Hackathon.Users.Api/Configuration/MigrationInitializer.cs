@@ -10,10 +10,15 @@ public static class MigrationInitializer
         Console.WriteLine("Applying migrations");
         using (var serviceScope = app.Services.CreateScope())
         {
-            Console.WriteLine("Users...");
-            var userServiceDb = serviceScope.ServiceProvider
-                             .GetService<UserDbContext>();
-            userServiceDb!.Database.Migrate();
+            Console.WriteLine("Doctor Users...");
+            var doctorUserServiceDb = serviceScope.ServiceProvider
+                             .GetService<DoctorUserDbContext>();
+            doctorUserServiceDb!.Database.Migrate();
+
+            Console.WriteLine("Patient Users...");
+            var patientUserServiceDb = serviceScope.ServiceProvider
+                             .GetService<PatientUsersDBContext>();
+            patientUserServiceDb!.Database.Migrate();
         }
         Console.WriteLine("Done");
     }
