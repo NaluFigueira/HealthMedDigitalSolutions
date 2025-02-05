@@ -66,7 +66,7 @@ public class PatientLoginUseCaseTest
         result.Value.Should().NotBeNullOrEmpty();
 
         _mockSignManager.Verify(repo => repo.PasswordSignInAsync(
-            It.Is<string>(u => u == request.CPF),
+            It.Is<string>(u => u == user.UserName),
             It.Is<string>(p => p == request.Password),
             It.Is<bool>(isPersistent => isPersistent == false),
             It.Is<bool>(lockoutOnFailure => lockoutOnFailure == false)
@@ -110,7 +110,7 @@ public class PatientLoginUseCaseTest
         result.IsSuccess.Should().BeFalse();
 
         _mockSignManager.Verify(repo => repo.PasswordSignInAsync(
-            It.Is<string>(u => u == request.CPF),
+            It.Is<string>(u => u == user.UserName),
             It.Is<string>(p => p == request.Password),
             It.Is<bool>(isPersistent => isPersistent == false),
             It.Is<bool>(lockoutOnFailure => lockoutOnFailure == false)

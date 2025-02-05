@@ -32,7 +32,7 @@ public class DoctorLoginUseCase(
             return Result.Fail([error]);
         }
 
-        var result = await _signInManager.PasswordSignInAsync(request.CRM, request.Password, false, false);
+        var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, false, false);
 
         if (!result.Succeeded)
         {

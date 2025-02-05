@@ -57,15 +57,7 @@ public class Startup(IConfiguration configuration)
                     ValidateAudience = false,
                     ValidateIssuer = false,
                     ClockSkew = TimeSpan.Zero
-                })
-                .AddCookie("DoctorUserSchema", options =>
-                {
-                    options.LoginPath = "/doctors/login";
-                })
-                .AddCookie("PatientUserSchema", options =>
-                {
-                    options.LoginPath = "/patients/login";
-                });
+                }).AddCookie("Identity.Application");
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
         services.AddUserUseCases();
