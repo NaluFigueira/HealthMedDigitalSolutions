@@ -6,4 +6,6 @@ public class Patient
     public string Name { get; set; }
     public string Email { get; set; }
     public string CPF { get; set; }
+
+    public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 }

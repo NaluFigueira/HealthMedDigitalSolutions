@@ -17,6 +17,7 @@ public class AppointmentsDBContext : DbContext
     public DbSet<Patient> Patients { get; set; }
     public DbSet<Doctor> Doctors { get; set; }
     public DbSet<AvailabilitySlot> AvailabilitySlots { get; set; }
+    public DbSet<Appointment> Appointments { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -27,7 +28,7 @@ public class AppointmentsDBContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
+
         modelBuilder.Entity<Doctor>(entity =>
         {
             entity.ToTable("Doctors");
@@ -39,13 +40,13 @@ public class AppointmentsDBContext : DbContext
                 .HasColumnType("NVARCHAR(250)")
                 .IsRequired()
                 .HasMaxLength(250);
-            
+
             entity.Property(e => e.Email)
                 .HasColumnName("Email")
                 .HasColumnType("NVARCHAR(250)")
                 .IsRequired()
                 .HasMaxLength(250);
-            
+
             entity.Property(e => e.CRM)
                 .HasColumnName("CRM")
                 .HasColumnType("NVARCHAR(20)")
@@ -58,7 +59,7 @@ public class AppointmentsDBContext : DbContext
                 .IsRequired()
                 .HasMaxLength(14);
         });
-        
+
         modelBuilder.Entity<Patient>(entity =>
         {
             entity.ToTable("Patients");
@@ -70,7 +71,7 @@ public class AppointmentsDBContext : DbContext
                 .HasColumnType("NVARCHAR(250)")
                 .IsRequired()
                 .HasMaxLength(250);
-            
+
             entity.Property(e => e.Email)
                 .HasColumnName("Email")
                 .HasColumnType("NVARCHAR(250)")
@@ -83,5 +84,15 @@ public class AppointmentsDBContext : DbContext
                 .IsRequired()
                 .HasMaxLength(14);
         });
+
+        modelBuilder.Entity<Appointment>()
+            .HasOne(a => a.Doctor)
+            .WithMany(d => d.Appointments)
+            .HasForeignKey(a => a.DoctorId);
+
+        modelBuilder.Entity<Appointment>()
+            .HasOne(a => a.Patient)
+            .WithMany(p => p.Appointments)
+            .HasForeignKey(a => a.PatientId);
     }
 }
