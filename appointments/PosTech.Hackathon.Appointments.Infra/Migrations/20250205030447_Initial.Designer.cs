@@ -12,8 +12,8 @@ using PosTech.Hackathon.Appointments.Infra.Context;
 namespace PosTech.Hackathon.Appointments.Infra.Migrations
 {
     [DbContext(typeof(AppointmentsDBContext))]
-    [Migration("20250204231223_ChangeCpfMaxValue")]
-    partial class ChangeCpfMaxValue
+    [Migration("20250205030447_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,9 +44,12 @@ namespace PosTech.Hackathon.Appointments.Infra.Migrations
 
             modelBuilder.Entity("PosTech.Hackathon.Appointments.Domain.Entities.Doctor", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<double>("AppointmentValue")
+                        .HasColumnType("FLOAT")
+                        .HasColumnName("AppointmentValue");
 
                     b.Property<string>("CPF")
                         .IsRequired()
@@ -72,6 +75,12 @@ namespace PosTech.Hackathon.Appointments.Infra.Migrations
                         .HasColumnType("NVARCHAR(250)")
                         .HasColumnName("Name");
 
+                    b.Property<string>("Specialty")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("NVARCHAR(100)")
+                        .HasColumnName("Specialty");
+
                     b.HasKey("Id");
 
                     b.ToTable("Doctors", (string)null);
@@ -79,9 +88,8 @@ namespace PosTech.Hackathon.Appointments.Infra.Migrations
 
             modelBuilder.Entity("PosTech.Hackathon.Appointments.Domain.Entities.Patient", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CPF")
                         .IsRequired()
