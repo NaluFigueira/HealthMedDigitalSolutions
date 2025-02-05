@@ -125,4 +125,33 @@ public class CreateDoctorDTOValidatorTest
         result.Errors.Should().NotBeEmpty();
         result.Errors.Select(err => err.ErrorMessage).Should().Contain("RePassword and Password do not match.");
     }
+
+    [Fact]
+    public void Validate_WhenAppointmentValueIsEmpty_ShouldReturnError()
+    {
+        //Arrange
+        var createUserDTO = new CreateDoctorDTOBuilder().WithAppointmentValue(0).Build();
+
+        // Act
+        var result = _validator.Validate(createUserDTO);
+
+        // Assert
+        result.Errors.Should().NotBeEmpty();
+        result.Errors.Select(err => err.ErrorMessage).Should().Contain("AppointmentValue is required.");
+    }
+
+    [Fact]
+    public void Validate_WhenSpecialtyIsEmpty_ShouldReturnError()
+    {
+        //Arrange
+        var createUserDTO = new CreateDoctorDTOBuilder().WithSpecialty("").Build();
+
+        // Act
+        var result = _validator.Validate(createUserDTO);
+
+        // Assert
+        result.Errors.Should().NotBeEmpty();
+        result.Errors.Select(err => err.ErrorMessage).Should().Contain("Specialty is required.");
+    }
+
 }

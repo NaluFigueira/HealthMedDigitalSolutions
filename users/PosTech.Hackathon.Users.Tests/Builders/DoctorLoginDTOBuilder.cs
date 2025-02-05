@@ -3,35 +3,36 @@ using PosTech.Hackathon.Users.Application.DTOs;
 
 namespace PosTech.Hackathon.Users.Tests.Builders;
 
-public class LoginDTOBuilder
+public class DoctorLoginDTOBuilder
 {
-    public string UserName { get; set; }
+    public string CRM { get; set; }
     public string Password { get; set; }
 
-    public LoginDTOBuilder()
+    public DoctorLoginDTOBuilder()
     {
         var faker = new Faker("pt_BR");
-        UserName = faker.Internet.UserName();
+        CRM = "123456-XX";
         Password = faker.Internet.Password();
     }
 
 
-    public LoginDTOBuilder WithUserName(string username)
+    public DoctorLoginDTOBuilder WithCRM(string crm)
     {
-        UserName = username;
+        CRM = crm;
         return this;
     }
-    public LoginDTOBuilder WithPassword(string password)
+
+    public DoctorLoginDTOBuilder WithPassword(string password)
     {
         Password = password;
         return this;
     }
 
-    public LoginDTO Build()
+    public DoctorLoginDTO Build()
     {
-        return new LoginDTO()
+        return new DoctorLoginDTO()
         {
-            UserName = UserName,
+            CRM = CRM,
             Password = Password,
         };
     }

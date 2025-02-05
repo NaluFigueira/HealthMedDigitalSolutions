@@ -12,7 +12,7 @@ namespace PosTech.Hackathon.Users.Tests.Unit;
 
 public class CreateDoctorUseCaseTest
 {
-    private readonly Mock<UserManager<User>> _mockUserManager = new(Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
+    private readonly Mock<UserManager<DoctorUser>> _mockUserManager = new(Mock.Of<IUserStore<DoctorUser>>(), null, null, null, null, null, null, null, null);
     private readonly Mock<IProducer> _mockProducer = new();
     private readonly Mock<ILogger<CreateDoctorUseCase>> _mockLogger = new();
 
@@ -21,20 +21,24 @@ public class CreateDoctorUseCaseTest
     {
         // Arrange
         var request = new CreateDoctorDTOBuilder().Build();
-        var expectedUser = new User
+        var expectedUser = new DoctorUser
         {
-            UserName = request.UserName,
+            Name = request.Name,
             Email = request.Email,
+            CRM = request.CRM,
+            CPF = request.CPF,
+            AppointmentValue = request.AppointmentValue,
+            Specialty = request.Specialty,
         };
-        var user = new UserBuilder().WithEmail(request.Email).Build();
+        var user = new DoctorUserBuilder().WithEmail(request.Email).Build();
 
         _mockUserManager
-            .Setup(repo => repo.CreateAsync(It.IsAny<User>(), It.IsAny<string>()))
+            .Setup(repo => repo.CreateAsync(It.IsAny<DoctorUser>(), It.IsAny<string>()))
             .ReturnsAsync(IdentityResult.Success);
 
         _mockUserManager
             .Setup(repo => repo.Users)
-            .Returns(new List<User>() { user }.AsQueryable());
+            .Returns(new List<DoctorUser>() { user }.AsQueryable());
 
         var useCase = new CreateDoctorUseCase(_mockLogger.Object, _mockProducer.Object, _mockUserManager.Object);
 
@@ -44,13 +48,13 @@ public class CreateDoctorUseCaseTest
         // Assert
         result.IsSuccess.Should().BeTrue();
 
-        _mockUserManager.Verify(repo => repo.CreateAsync(It.Is<User>(c =>
+        _mockUserManager.Verify(repo => repo.CreateAsync(It.Is<DoctorUser>(c =>
             c.Email == request.Email &&
             c.UserName == request.UserName
         ), It.Is<string>(s => s == request.Password)), Times.Once());
 
         _mockProducer.Verify(p => p.PublishMessageOnQueue(It.Is<Doctor>(d =>
-            d.UserId == user.Id &&
+            d.Id == user.Id &&
             d.Name == request.Name &&
             d.Email == request.Email &&
             d.CPF == request.CPF &&
@@ -73,7 +77,7 @@ public class CreateDoctorUseCaseTest
         result.IsSuccess.Should().BeFalse();
         result.Errors.Should().NotBeEmpty();
 
-        _mockUserManager.Verify(repo => repo.CreateAsync(It.IsAny<User>(), It.IsAny<string>()), Times.Never());
+        _mockUserManager.Verify(repo => repo.CreateAsync(It.IsAny<DoctorUser>(), It.IsAny<string>()), Times.Never());
         _mockProducer.Verify(p => p.PublishMessageOnQueue(It.IsAny<Doctor>(), It.IsAny<string>()), Times.Never());
     }
 
@@ -84,7 +88,7 @@ public class CreateDoctorUseCaseTest
         var request = new CreateDoctorDTOBuilder().Build();
 
         _mockUserManager
-            .Setup(repo => repo.CreateAsync(It.IsAny<User>(), It.IsAny<string>()))
+            .Setup(repo => repo.CreateAsync(It.IsAny<DoctorUser>(), It.IsAny<string>()))
             .ReturnsAsync(IdentityResult.Failed([new IdentityError()]));
 
         var useCase = new CreateDoctorUseCase(_mockLogger.Object, _mockProducer.Object, _mockUserManager.Object);
@@ -97,7 +101,7 @@ public class CreateDoctorUseCaseTest
         result.IsSuccess.Should().BeFalse();
         result.Errors.Should().NotBeEmpty();
 
-        _mockUserManager.Verify(repo => repo.CreateAsync(It.Is<User>(c =>
+        _mockUserManager.Verify(repo => repo.CreateAsync(It.Is<DoctorUser>(c =>
             c.Email == request.Email &&
             c.UserName == request.UserName
         ), It.Is<string>(s => s == request.Password)), Times.Once());

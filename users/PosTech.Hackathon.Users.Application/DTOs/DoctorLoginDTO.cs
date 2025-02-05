@@ -1,7 +1,7 @@
 namespace PosTech.Hackathon.Users.Application.DTOs;
 
-public class LoginDTO
+public class DoctorLoginDTO
 {
-    public required string UserName { get; set; }
+    public required string CRM { get; set; }
     public required string Password { get; set; }
 }

@@ -1,3 +1,4 @@
+using System;
 using FluentResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -6,24 +7,25 @@ using PosTech.Hackathon.Users.Application.Interfaces.Services;
 using PosTech.Hackathon.Users.Application.Interfaces.UseCases;
 using PosTech.Hackathon.Users.Domain.Entities;
 
-namespace PosTech.Hackathon.Users.Application.UseCases.Authentications;
+namespace PosTech.Hackathon.Users.Application.UseCases.Authentication;
 
-public class LoginUseCase(
-    ILogger<ILoginUseCase> logger,
-    SignInManager<User> signInManager,
+public class PatientLoginUseCase(
+    ILogger<IPatientLoginUseCase> logger,
+    SignInManager<PatientUser> signInManager,
     ITokenService tokenService
-) : ILoginUseCase
+) : IPatientLoginUseCase
 {
-    private readonly ILogger<ILoginUseCase> _logger = logger;
-    private readonly SignInManager<User> _signInManager = signInManager;
+    private readonly ILogger<IPatientLoginUseCase> _logger = logger;
+    private readonly SignInManager<PatientUser> _signInManager = signInManager;
     private readonly ITokenService _tokenService = tokenService;
 
-    public async Task<Result<string>> ExecuteAsync(LoginDTO request)
+    public async Task<Result<string>> ExecuteAsync(PatientLoginDTO request)
     {
+        var login = request.CPF.Length > 0 ? request.CPF : request.Email;
         var user = _signInManager
                 .UserManager
                 .Users
-                .FirstOrDefault(user => user.NormalizedUserName == request.UserName.ToUpper());
+                .FirstOrDefault(user => (request.CPF.Length > 0 ? user.CPF : user.Email) == login.ToUpper());
 
         if (user == null)
         {
@@ -32,7 +34,7 @@ public class LoginUseCase(
             return Result.Fail([error]);
         }
 
-        var result = await _signInManager.PasswordSignInAsync(request.UserName, request.Password, false, false);
+        var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, false, false);
 
         if (!result.Succeeded)
         {

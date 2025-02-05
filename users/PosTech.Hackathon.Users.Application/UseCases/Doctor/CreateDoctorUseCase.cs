@@ -13,12 +13,12 @@ namespace PosTech.Hackathon.Users.Application.UseCases.Doctor;
 public class CreateDoctorUseCase(
     ILogger<CreateDoctorUseCase> logger,
     IProducer producer,
-    UserManager<User> userManager
+    UserManager<DoctorUser> userManager
 ) : ICreateDoctorUseCase
 {
     private readonly ILogger _logger = logger;
     private readonly IProducer _producer = producer;
-    private readonly UserManager<User> _userManager = userManager;
+    private readonly UserManager<DoctorUser> _userManager = userManager;
 
     public async Task<Result> ExecuteAsync(CreateDoctorDTO request)
     {
@@ -31,10 +31,15 @@ public class CreateDoctorUseCase(
             return Result.Fail(errors);
         }
 
-        var newUser = new User
+        var newUser = new DoctorUser
         {
             Email = request.Email,
             UserName = request.UserName,
+            Name = request.Name,
+            CRM = request.CRM,
+            CPF = request.CPF,
+            AppointmentValue = request.AppointmentValue,
+            Specialty = request.Specialty,
         };
 
         var result = await _userManager.CreateAsync(newUser, request.Password);
@@ -57,11 +62,13 @@ public class CreateDoctorUseCase(
 
         var doctor = new Domain.Entities.Doctor
         {
-            UserId = user.Id,
+            Id = user.Id,
             Name = request.Name,
             Email = request.Email,
-            CPF = request.CPF,
             CRM = request.CRM,
+            CPF = request.CPF,
+            AppointmentValue = request.AppointmentValue,
+            Specialty = request.Specialty,
         };
 
         _producer.PublishMessageOnQueue(doctor, UserQueues.DoctorCreated);
