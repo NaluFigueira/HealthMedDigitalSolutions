@@ -28,7 +28,13 @@ namespace PosTech.Hackathon.Appointments.Infra.Migrations
                 name: "Doctors",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "NVARCHAR(250)", maxLength: 250, nullable: false),
+                    Email = table.Column<string>(type: "NVARCHAR(250)", maxLength: 250, nullable: false),
+                    CRM = table.Column<string>(type: "NVARCHAR(20)", maxLength: 20, nullable: false),
+                    CPF = table.Column<string>(type: "NVARCHAR(14)", maxLength: 14, nullable: false),
+                    AppointmentValue = table.Column<double>(type: "FLOAT", nullable: false),
+                    Specialty = table.Column<string>(type: "NVARCHAR(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -39,7 +45,10 @@ namespace PosTech.Hackathon.Appointments.Infra.Migrations
                 name: "Patients",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "NVARCHAR(250)", maxLength: 250, nullable: false),
+                    Email = table.Column<string>(type: "NVARCHAR(250)", maxLength: 250, nullable: false),
+                    CPF = table.Column<string>(type: "NVARCHAR(14)", maxLength: 14, nullable: false)
                 },
                 constraints: table =>
                 {

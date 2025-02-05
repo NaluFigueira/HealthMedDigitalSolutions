@@ -39,13 +39,13 @@ public class AppointmentsDBContext : DbContext
                 .HasColumnType("NVARCHAR(250)")
                 .IsRequired()
                 .HasMaxLength(250);
-            
+
             entity.Property(e => e.Email)
                 .HasColumnName("Email")
                 .HasColumnType("NVARCHAR(250)")
                 .IsRequired()
                 .HasMaxLength(250);
-            
+
             entity.Property(e => e.CRM)
                 .HasColumnName("CRM")
                 .HasColumnType("NVARCHAR(20)")
@@ -57,6 +57,17 @@ public class AppointmentsDBContext : DbContext
                 .HasColumnType("NVARCHAR(14)")
                 .IsRequired()
                 .HasMaxLength(14);
+
+            entity.Property(e => e.AppointmentValue)
+                .HasColumnName("AppointmentValue")
+                .HasColumnType("FLOAT")
+                .IsRequired();
+
+            entity.Property(e => e.Specialty)
+                .HasColumnName("Specialty")
+                .HasColumnType("NVARCHAR(100)")
+                .IsRequired()
+                .HasMaxLength(100);
         });
         
         modelBuilder.Entity<Patient>(entity =>
