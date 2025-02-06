@@ -19,10 +19,7 @@ public class ScheduleAppointmentUseCase(
         if (request.Date <= DateTime.UtcNow)
             return Result.Fail("The appointment time must be in the future.");
 
-        if (!Guid.TryParse(patientId, out var id))
-            return Result.Fail("Patient id is not valid.");
-
-        var patient = await patientRepository.GetByIdAsync(id);
+        var patient = await patientRepository.GetByIdAsync(patientId);
         if (patient == null)
             return Result.Fail("Patient not found.");
 
