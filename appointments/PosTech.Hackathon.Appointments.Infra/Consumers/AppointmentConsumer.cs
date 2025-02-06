@@ -29,7 +29,7 @@ public class AppointmentConsumer(
         if (!patientExists) return;
 
         var availableSlot = await db.AvailabilitySlots
-            .FirstOrDefaultAsync(h => h.DoctorId.ToString() == entity.DoctorId && h.Slot == entity.Date);
+            .FirstOrDefaultAsync(h => h.DoctorId == entity.DoctorId && h.Slot == entity.AvailabilitySlot!.Slot);
 
         if (availableSlot == null) return;
 
@@ -40,7 +40,7 @@ public class AppointmentConsumer(
             Id = entity.Id,
             DoctorId = entity.DoctorId,
             PatientId = entity.PatientId,
-            Date = entity.Date,
+            SlotId = entity.SlotId,
             DoctorConfirmationPending = true,
             Rejected = false
         };

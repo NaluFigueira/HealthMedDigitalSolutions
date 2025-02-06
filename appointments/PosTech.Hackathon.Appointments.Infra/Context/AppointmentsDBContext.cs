@@ -27,73 +27,49 @@ public class AppointmentsDBContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<Patient>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired();
+            entity.Property(e => e.Email).IsRequired();
+            entity.Property(e => e.CPF).IsRequired();
+        });
 
         modelBuilder.Entity<Doctor>(entity =>
         {
-            entity.ToTable("Doctors");
-
             entity.HasKey(e => e.Id);
-
-            entity.Property(e => e.Name)
-                .HasColumnName("Name")
-                .HasColumnType("NVARCHAR(250)")
-                .IsRequired()
-                .HasMaxLength(250);
-
-            entity.Property(e => e.Email)
-                .HasColumnName("Email")
-                .HasColumnType("NVARCHAR(250)")
-                .IsRequired()
-                .HasMaxLength(250);
-
-            entity.Property(e => e.CRM)
-                .HasColumnName("CRM")
-                .HasColumnType("NVARCHAR(20)")
-                .IsRequired()
-                .HasMaxLength(20);
-
-            entity.Property(e => e.CPF)
-                .HasColumnName("CPF")
-                .HasColumnType("NVARCHAR(14)")
-                .IsRequired()
-                .HasMaxLength(14);
-
-            entity.Property(e => e.AppointmentValue)
-                .HasColumnName("AppointmentValue")
-                .HasColumnType("FLOAT")
-                .IsRequired();
-
-            entity.Property(e => e.Specialty)
-                .HasColumnName("Specialty")
-                .HasColumnType("NVARCHAR(100)")
-                .IsRequired()
-                .HasMaxLength(100);
+            entity.Property(e => e.Name).IsRequired();
+            entity.Property(e => e.Email).IsRequired();
+            entity.Property(e => e.CRM).IsRequired();
+            entity.Property(e => e.CPF).IsRequired();
+            entity.Property(e => e.AppointmentValue).IsRequired();
+            entity.Property(e => e.Specialty).IsRequired();
         });
 
-        modelBuilder.Entity<Patient>(entity =>
+        modelBuilder.Entity<AvailabilitySlot>(entity =>
         {
-            entity.ToTable("Patients");
-
             entity.HasKey(e => e.Id);
+            entity.Property(e => e.DoctorId).IsRequired();
+            entity.Property(e => e.Slot).IsRequired();
+            entity.HasOne(e => e.Appointment)
+                  .WithOne(a => a.AvailabilitySlot)
+                  .HasForeignKey<Appointment>(a => a.SlotId);
+        });
 
-            entity.Property(e => e.Name)
-                .HasColumnName("Name")
-                .HasColumnType("NVARCHAR(250)")
-                .IsRequired()
-                .HasMaxLength(250);
-
-            entity.Property(e => e.Email)
-                .HasColumnName("Email")
-                .HasColumnType("NVARCHAR(250)")
-                .IsRequired()
-                .HasMaxLength(250);
-
-            entity.Property(e => e.CPF)
-                .HasColumnName("CPF")
-                .HasColumnType("NVARCHAR(14)")
-                .IsRequired()
-                .HasMaxLength(14);
+        modelBuilder.Entity<Appointment>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.DoctorId).IsRequired();
+            entity.Property(e => e.PatientId).IsRequired();
+            entity.Property(e => e.SlotId).IsRequired();
+            entity.Property(e => e.DoctorConfirmationPending).IsRequired();
+            entity.Property(e => e.Rejected).IsRequired();
+            entity.HasOne(e => e.Doctor)
+                  .WithMany(d => d.Appointments)
+                  .HasForeignKey(e => e.DoctorId);
+            entity.HasOne(e => e.Patient)
+                  .WithMany(p => p.Appointments)
+                  .HasForeignKey(e => e.PatientId);
         });
 
         modelBuilder.Entity<Appointment>()

@@ -1,6 +1,6 @@
 ﻿namespace PosTech.Hackathon.Appointments.Application.DTOs;
 
-public record AddAvailabilitySlotsDTO
+public class AddAvailabilitySlotsDTO
 {
     public Guid DoctorId { get; set; }
     public List<AvailabilitySlotDTO> AvailabilitySlots { get; set; } = [];

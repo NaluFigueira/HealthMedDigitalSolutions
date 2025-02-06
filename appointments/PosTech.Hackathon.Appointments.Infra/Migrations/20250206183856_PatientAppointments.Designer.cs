@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PosTech.Hackathon.Appointments.Infra.Context;
 
@@ -11,9 +12,11 @@ using PosTech.Hackathon.Appointments.Infra.Context;
 namespace PosTech.Hackathon.Appointments.Infra.Migrations
 {
     [DbContext(typeof(AppointmentsDBContext))]
-    partial class AppointmentsDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250206183856_PatientAppointments")]
+    partial class PatientAppointments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -165,35 +168,6 @@ namespace PosTech.Hackathon.Appointments.Infra.Migrations
             modelBuilder.Entity("PosTech.Hackathon.Appointments.Domain.Entities.AvailabilitySlot", b =>
                 {
                     b.Navigation("Appointment");
-                });
-
-            modelBuilder.Entity("PosTech.Hackathon.Appointments.Domain.Entities.Doctor", b =>
-                {
-                    b.Navigation("Appointments");
-                });
-
-            modelBuilder.Entity("PosTech.Hackathon.Appointments.Domain.Entities.Patient", b =>
-                {
-                    b.Navigation("Appointments");
-                });
-
-            modelBuilder.Entity("PosTech.Hackathon.Appointments.Domain.Entities.Appointment", b =>
-                {
-                    b.HasOne("PosTech.Hackathon.Appointments.Domain.Entities.Doctor", "Doctor")
-                        .WithMany("Appointments")
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PosTech.Hackathon.Appointments.Domain.Entities.Patient", "Patient")
-                        .WithMany("Appointments")
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Doctor");
-
-                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("PosTech.Hackathon.Appointments.Domain.Entities.Doctor", b =>
