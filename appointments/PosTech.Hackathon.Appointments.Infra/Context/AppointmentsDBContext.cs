@@ -95,5 +95,20 @@ public class AppointmentsDBContext : DbContext
                 .IsRequired()
                 .HasMaxLength(14);
         });
+
+        modelBuilder.Entity<Appointment>()
+            .HasOne(a => a.Doctor)
+            .WithMany(d => d.Appointments)
+            .HasForeignKey(a => a.DoctorId);
+
+        modelBuilder.Entity<Appointment>()
+            .HasOne(a => a.Patient)
+            .WithMany(p => p.Appointments)
+            .HasForeignKey(a => a.PatientId);
+
+        modelBuilder.Entity<Appointment>()
+            .HasOne(a => a.AvailabilitySlot)
+            .WithOne(p => p.Appointment)
+            .HasForeignKey<Appointment>(a => a.SlotId);
     }
 }

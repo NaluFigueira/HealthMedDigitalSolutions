@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PosTech.Hackathon.Appointments.Infra.Context;
 
@@ -11,9 +12,11 @@ using PosTech.Hackathon.Appointments.Infra.Context;
 namespace PosTech.Hackathon.Appointments.Infra.Migrations
 {
     [DbContext(typeof(AppointmentsDBContext))]
-    partial class AppointmentsDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250205235544_CreateAppointmentTable")]
+    partial class CreateAppointmentTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,26 +59,6 @@ namespace PosTech.Hackathon.Appointments.Infra.Migrations
                     b.HasIndex("DoctorId");
 
                     b.HasIndex("PatientId");
-
-                    b.ToTable("Appointments");
-                });
-
-            modelBuilder.Entity("PosTech.Hackathon.Appointments.Domain.Entities.Appointment", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("DoctorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("PatientId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("SlotId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
 
                     b.ToTable("Appointments");
                 });
