@@ -12,7 +12,7 @@ using PosTech.Hackathon.Appointments.Infra.Context;
 namespace PosTech.Hackathon.Appointments.Infra.Migrations
 {
     [DbContext(typeof(AppointmentsDBContext))]
-    [Migration("20250204231007_CreateAppointmentTable")]
+    [Migration("20250205235544_CreateAppointmentTable")]
     partial class CreateAppointmentTable
     {
         /// <inheritdoc />
@@ -37,11 +37,13 @@ namespace PosTech.Hackathon.Appointments.Infra.Migrations
                     b.Property<bool>("DoctorConfirmationPending")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("DoctorId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("DoctorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid>("PatientId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("PatientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("Rejected")
                         .HasColumnType("bit");
@@ -78,27 +80,19 @@ namespace PosTech.Hackathon.Appointments.Infra.Migrations
                     b.ToTable("AvailabilitySlots");
                 });
 
-            modelBuilder.Entity("PosTech.Hackathon.Appointments.Domain.Entities.AvailableSchedule", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AvailableSchedule");
-                });
-
             modelBuilder.Entity("PosTech.Hackathon.Appointments.Domain.Entities.Doctor", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<double>("AppointmentValue")
+                        .HasColumnType("FLOAT")
+                        .HasColumnName("AppointmentValue");
 
                     b.Property<string>("CPF")
                         .IsRequired()
-                        .HasMaxLength(11)
-                        .HasColumnType("NVARCHAR(11)")
+                        .HasMaxLength(14)
+                        .HasColumnType("NVARCHAR(14)")
                         .HasColumnName("CPF");
 
                     b.Property<string>("CRM")
@@ -119,6 +113,12 @@ namespace PosTech.Hackathon.Appointments.Infra.Migrations
                         .HasColumnType("NVARCHAR(250)")
                         .HasColumnName("Name");
 
+                    b.Property<string>("Specialty")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("NVARCHAR(100)")
+                        .HasColumnName("Specialty");
+
                     b.HasKey("Id");
 
                     b.ToTable("Doctors", (string)null);
@@ -126,14 +126,13 @@ namespace PosTech.Hackathon.Appointments.Infra.Migrations
 
             modelBuilder.Entity("PosTech.Hackathon.Appointments.Domain.Entities.Patient", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CPF")
                         .IsRequired()
-                        .HasMaxLength(11)
-                        .HasColumnType("NVARCHAR(11)")
+                        .HasMaxLength(14)
+                        .HasColumnType("NVARCHAR(14)")
                         .HasColumnName("CPF");
 
                     b.Property<string>("Email")

@@ -29,7 +29,7 @@ public class AppointmentConsumer(
         if (!patientExists) return;
 
         var availableSlot = await db.AvailabilitySlots
-            .FirstOrDefaultAsync(h => h.DoctorId == entity.DoctorId && h.Slot == entity.Date);
+            .FirstOrDefaultAsync(h => h.DoctorId.ToString() == entity.DoctorId && h.Slot == entity.Date);
 
         if (availableSlot == null) return;
 

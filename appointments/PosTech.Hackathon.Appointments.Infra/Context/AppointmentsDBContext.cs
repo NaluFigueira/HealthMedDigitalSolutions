@@ -58,6 +58,17 @@ public class AppointmentsDBContext : DbContext
                 .HasColumnType("NVARCHAR(14)")
                 .IsRequired()
                 .HasMaxLength(14);
+
+            entity.Property(e => e.AppointmentValue)
+                .HasColumnName("AppointmentValue")
+                .HasColumnType("FLOAT")
+                .IsRequired();
+
+            entity.Property(e => e.Specialty)
+                .HasColumnName("Specialty")
+                .HasColumnType("NVARCHAR(100)")
+                .IsRequired()
+                .HasMaxLength(100);
         });
 
         modelBuilder.Entity<Patient>(entity =>
