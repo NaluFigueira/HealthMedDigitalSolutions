@@ -24,6 +24,7 @@ var app = builder.Build();
 startup.Configure(app);
 app.ApplyMigrations();
 app.MapAvailabilitySlotsEndpoints();
+app.MapAppointmentsEndpoints();
 app.MapScheduleAppointmentEndpoints();
 
 app.Run();

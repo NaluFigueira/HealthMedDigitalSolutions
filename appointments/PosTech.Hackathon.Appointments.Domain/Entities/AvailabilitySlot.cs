@@ -2,7 +2,9 @@
 
 public class AvailabilitySlot
 {
-    public Guid Id { get; set; }
-    public Guid DoctorId { get; set; }
-    public DateTime Slot { get; set; }
+    public required Guid Id { get; set; }
+    public required Guid DoctorId { get; set; }
+    public required DateTime Slot { get; set; }
+
+    public Appointment? Appointment { get; set; }
 }

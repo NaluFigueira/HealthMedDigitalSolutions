@@ -14,7 +14,7 @@ public class ScheduleAppointmentUseCase(
     IDoctorRepository doctorRepository)
     : IScheduleAppointmentUseCase
 {
-    public async Task<Result> ExecuteAsync(string patientId, ScheduleAppointmentDTO request)
+    public async Task<Result> ExecuteAsync(Guid patientId, ScheduleAppointmentDTO request)
     {
         if (request.Date <= DateTime.UtcNow)
             return Result.Fail("The appointment time must be in the future.");

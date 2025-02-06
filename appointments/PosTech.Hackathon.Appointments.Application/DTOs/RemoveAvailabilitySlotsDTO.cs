@@ -1,3 +1,7 @@
 ﻿namespace PosTech.Hackathon.Appointments.Application.DTOs;
 
-public record RemoveAvailabilitySlotsDTO();
+public class RemoveAvailabilitySlotsDTO
+{
+    public Guid DoctorId { get; set; }
+    public Guid SlotId { get; set; }
+}

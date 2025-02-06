@@ -1,3 +1,6 @@
 ﻿namespace PosTech.Hackathon.Appointments.Application.DTOs;
 
-public record AvailabilitySlotDTO(DateTime Slot);
+public class AvailabilitySlotDTO
+{
+    public DateTime Slot { get; set; }
+}

@@ -3,5 +3,5 @@
 namespace PosTech.Hackathon.Appointments.Infra.Interfaces;
 public interface IPatientRepository
 {
-    Task<Patient> GetByIdAsync(string patientId);
+    Task<Patient> GetByIdAsync(Guid patientId);
 }

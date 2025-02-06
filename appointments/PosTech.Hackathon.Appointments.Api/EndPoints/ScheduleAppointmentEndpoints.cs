@@ -65,9 +65,9 @@ public static class ScheduleAppointmentEndpoints
         IScheduleAppointmentUseCase scheduleAppointmentUseCase,
         ScheduleAppointmentDTO request)
     {
-        var patientId = httpContext.User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+        var patientIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
 
-        if (string.IsNullOrEmpty(patientId))
+        if (string.IsNullOrEmpty(patientIdClaim) || !Guid.TryParse(patientIdClaim, out var patientId))
             return Results.Unauthorized();
 
         var result = await scheduleAppointmentUseCase.ExecuteAsync(patientId, request);
