@@ -12,8 +12,8 @@ using PosTech.Hackathon.Appointments.Infra.Context;
 namespace PosTech.Hackathon.Appointments.Infra.Migrations
 {
     [DbContext(typeof(AppointmentsDBContext))]
-    [Migration("20250205235544_CreateAppointmentTable")]
-    partial class CreateAppointmentTable
+    [Migration("20250206183856_PatientAppointments")]
+    partial class PatientAppointments
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,19 +31,14 @@ namespace PosTech.Hackathon.Appointments.Infra.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
                     b.Property<bool>("DoctorConfirmationPending")
                         .HasColumnType("bit");
 
-                    b.Property<string>("DoctorId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("DoctorId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("PatientId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("PatientId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Rejected")
                         .HasColumnType("bit");
@@ -54,11 +49,17 @@ namespace PosTech.Hackathon.Appointments.Infra.Migrations
                     b.Property<string>("RejectionJustification")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("SlotId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DoctorId");
 
                     b.HasIndex("PatientId");
+
+                    b.HasIndex("SlotId")
+                        .IsUnique();
 
                     b.ToTable("Appointments");
                 });
@@ -82,74 +83,59 @@ namespace PosTech.Hackathon.Appointments.Infra.Migrations
 
             modelBuilder.Entity("PosTech.Hackathon.Appointments.Domain.Entities.Doctor", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("AppointmentValue")
-                        .HasColumnType("FLOAT")
-                        .HasColumnName("AppointmentValue");
+                        .HasColumnType("float");
 
                     b.Property<string>("CPF")
                         .IsRequired()
-                        .HasMaxLength(14)
-                        .HasColumnType("NVARCHAR(14)")
-                        .HasColumnName("CPF");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CRM")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("NVARCHAR(20)")
-                        .HasColumnName("CRM");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("NVARCHAR(250)")
-                        .HasColumnName("Email");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("NVARCHAR(250)")
-                        .HasColumnName("Name");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Specialty")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("NVARCHAR(100)")
-                        .HasColumnName("Specialty");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Doctors", (string)null);
+                    b.ToTable("Doctors");
                 });
 
             modelBuilder.Entity("PosTech.Hackathon.Appointments.Domain.Entities.Patient", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CPF")
                         .IsRequired()
-                        .HasMaxLength(14)
-                        .HasColumnType("NVARCHAR(14)")
-                        .HasColumnName("CPF");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("NVARCHAR(250)")
-                        .HasColumnName("Email");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("NVARCHAR(250)")
-                        .HasColumnName("Name");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Patients", (string)null);
+                    b.ToTable("Patients");
                 });
 
             modelBuilder.Entity("PosTech.Hackathon.Appointments.Domain.Entities.Appointment", b =>
@@ -166,9 +152,22 @@ namespace PosTech.Hackathon.Appointments.Infra.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("PosTech.Hackathon.Appointments.Domain.Entities.AvailabilitySlot", "AvailabilitySlot")
+                        .WithOne("Appointment")
+                        .HasForeignKey("PosTech.Hackathon.Appointments.Domain.Entities.Appointment", "SlotId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AvailabilitySlot");
+
                     b.Navigation("Doctor");
 
                     b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("PosTech.Hackathon.Appointments.Domain.Entities.AvailabilitySlot", b =>
+                {
+                    b.Navigation("Appointment");
                 });
 
             modelBuilder.Entity("PosTech.Hackathon.Appointments.Domain.Entities.Doctor", b =>

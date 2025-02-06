@@ -48,21 +48,7 @@ public static class AvailabilitySlotsEndpoints
             .WithOpenApi(operation => new(operation)
             {
                 Tags = tags,
-                Summary = "Remove a doctor's availability slots",
-                RequestBody = new OpenApiRequestBody()
-                {
-                    Content = new Dictionary<string, OpenApiMediaType>
-                    {
-                        ["application/json"] = new OpenApiMediaType
-                        {
-
-                            Example = new OpenApiString(JsonSerializer.Serialize(new RemoveAvailabilitySlotsDTO
-                            {
-                                SlotId = Guid.NewGuid()
-                            })),
-                        }
-                    }
-                }
+                Summary = "Remove a doctor's availability slots"
             })
             .Produces(StatusCodes.Status200OK)
             .Produces<string>(StatusCodes.Status400BadRequest)
