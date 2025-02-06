@@ -1,5 +1,5 @@
 extends:
-  template: ../azure-pipelines-template.yml
+  template: ../azure-pipeline-template.yml
   parameters:
     baseMSPath: "$(Build.SourcesDirectory)/users/**/*.csproj"
     dockerfilePath: "$(Build.SourcesDirectory)/users/Dockerfile"
