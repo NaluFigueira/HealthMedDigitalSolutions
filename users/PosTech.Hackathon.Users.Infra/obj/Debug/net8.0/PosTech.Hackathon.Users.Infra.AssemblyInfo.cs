@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PosTech.Hackathon.Users.Infra")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d1da01c52486dfc2c0c9afebc3e95818a312b625")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0f3be5050e826409164a24ce30440457b3604ecf")]
 [assembly: System.Reflection.AssemblyProductAttribute("PosTech.Hackathon.Users.Infra")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PosTech.Hackathon.Users.Infra")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,0 +1,133 @@
+parameters:
+  - name: baseMSPath
+    type: string
+    default: ""
+  - name: dockerfilePath
+    type: string
+    default: ""
+  - name: testsProjectPath
+    type: string
+    default: ""
+  - name: unitTestFilter
+    type: string
+    default: ""
+
+variables:
+  buildConfiguration: "Release"
+  dotnetSdkVersion: "8.0.303"
+  dockerRegistryServiceConnection: "ca7ce8eb-b5a7-46af-95db-000a97982b57"
+  imageRepository: "hackathongrupo3acr"
+  containerRegistry: "hackathongrupo3acr.azurecr.io"
+  dockerfilePath: ${{parameters.dockerfilePath}}
+  testsProjectPath: ${{parameters.testsProjectPath}}
+  unitTestFilter: ${{parameters.unitTestFilter}}
+  baseMSPath: ${{parameters.baseMSPath}}
+  tag: "$(Build.BuildId)"
+  vmImageName: "ubuntu-latest"
+
+resources:
+  repositories:
+    - repository: self
+
+stages:
+  - stage: "Build"
+    displayName: "Build"
+    pool:
+      vmImage: $(vmImageName)
+    jobs:
+      - job: "Build"
+        displayName: "Build Job"
+        steps:
+          - task: UseDotNet@2
+            displayName: "Use .NET SDK $(dotnetSdkVersion)"
+            inputs:
+              packageType: "sdk"
+              version: "$(dotnetSdkVersion)"
+
+          - task: DotNetCoreCLI@2
+            displayName: "Restore project"
+            inputs:
+              command: "restore"
+              projects: $(baseMSPath)
+
+          - task: DotNetCoreCLI@2
+            displayName: "Build project"
+            inputs:
+              command: "build"
+              arguments: "--no-restore --configuration $(buildConfiguration)"
+              projects: $(baseMSPath)
+
+          - task: DotNetCoreCLI@2
+            displayName: "Publish project"
+            inputs:
+              command: "publish"
+              projects: $(baseMSPath)
+              publishWebProjects: false
+              arguments: "--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)"
+              zipAfterPublish: true
+
+          - publish: "$(Build.ArtifactStagingDirectory)"
+            artifact: drop
+
+  - stage: "Tests"
+    displayName: Run unit tests
+    pool:
+      vmImage: $(vmImageName)
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - job: RunTest
+        displayName: Run unit tests
+        steps:
+          - task: UseDotNet@2
+            displayName: "Use .NET SDK $(dotnetSdkVersion)"
+            inputs:
+              packageType: "sdk"
+              version: "$(dotnetSdkVersion)"
+          - task: DotNetCoreCLI@2
+            displayName: Run unit tests
+            inputs:
+              command: "test"
+              arguments: $(unitTestFilter)
+              projects: $(testsProjectPath)
+
+  - stage: "Push"
+    displayName: Build and push image stage
+    pool:
+      vmImage: $(vmImageName)
+    dependsOn: Tests
+    condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/development', 'refs/heads/stage', 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
+    jobs:
+      - job: BuildAndPush
+        displayName: Build and push image job
+        steps:
+          - task: Docker@2
+            displayName: Build and push service image to container registry
+            inputs:
+              command: buildAndPush
+              repository: $(imageRepository)
+              dockerfile: $(dockerfilePath)
+              containerRegistry: $(dockerRegistryServiceConnection)
+              tags: |
+                $(tag)
+
+  - stage: "Production"
+    displayName: "Deploy to the Production environment"
+    pool:
+      vmImage: $(vmImageName)
+    dependsOn: Staging
+    condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
+    jobs:
+      - deployment: Deploy
+        environment: production
+        #variables:
+        #- group: ''
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: drop
+                - script: |
+                    echo Deployment to Production successful!
+                  displayName: "Deploy to Production"
