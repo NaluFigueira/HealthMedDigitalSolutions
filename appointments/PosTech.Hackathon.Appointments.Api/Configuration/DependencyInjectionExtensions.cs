@@ -14,10 +14,7 @@ public static class DependencyInjectionExtensions
     public static IServiceCollection AddAppointmentUseCases(this IServiceCollection services)
     {
         services.AddScoped<IAddAvailabilitySlotsUseCase, AddAvailabilitySlotsUseCase>();
-        services.AddScoped<IRemoveAvailabilitySlotsUseCase, RemoveAvailabilitySlotsUseCase>();
         services.AddScoped<IScheduleAppointmentUseCase, ScheduleAppointmentUseCase>();
-        services.AddScoped<IGetAppointmentsUseCase, GetAppointmentsUseCase>();
-        services.AddScoped<ICancelAppointmentUseCase, CancelAppointmentUseCase>();
 
         return services;
     }
@@ -33,6 +30,11 @@ public static class DependencyInjectionExtensions
 
         //services
         services.AddScoped<IEmailService, EmailService>();
+
+        services.AddScoped<IRemoveAvailabilitySlotsUseCase, RemoveAvailabilitySlotsUseCase>();
+        services.AddScoped<IScheduleAppointmentUseCase, ScheduleAppointmentUseCase>();
+        services.AddScoped<IGetAppointmentsUseCase, GetAppointmentsUseCase>();
+        services.AddScoped<ICancelAppointmentUseCase, CancelAppointmentUseCase>();
 
         return services;
     }
