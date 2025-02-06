@@ -8,5 +8,6 @@ public static class ConsumersRegister
     {
         services.AddHostedService<DoctorCreatedConsumer>();
         services.AddHostedService<PatientCreatedConsumer>();
-    } 
+        services.AddHostedService<AppointmentConsumer>();
+    }
 }

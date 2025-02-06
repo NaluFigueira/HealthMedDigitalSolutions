@@ -1,6 +1,7 @@
 using PosTech.Hackathon.Appointments.Api;
 using PosTech.Hackathon.Appointments.Api.Configuration;
 using PosTech.Hackathon.Appointments.Api.Endpoints;
+using PosTech.Hackathon.Appointments.Api.EndPoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,5 +24,6 @@ var app = builder.Build();
 startup.Configure(app);
 app.ApplyMigrations();
 app.MapAvailabilitySlotsEndpoints();
+app.MapScheduleAppointmentEndpoints();
 
 app.Run();
