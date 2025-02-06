@@ -14,9 +14,9 @@ public static class AvailabilitySlotsEndpoints
 {
     public static void MapAvailabilitySlotsEndpoints(this WebApplication app)
     {
-        var tags = new List<OpenApiTag> { new() { Name = "Appointments" } };
+        var tags = new List<OpenApiTag> { new() { Name = "AvailabilitySlots" } };
 
-        app.MapPost("/availabilitySlots", ([FromBody] AddAvailabilitySlotsDTO dto, IAddAvailabilitySlotsUseCase useCase) => AddAvailabilitySlots(dto, useCase))
+        app.MapPost("/doctor/{doctorId}/availability", ([FromRoute] Guid doctorId, [FromBody] AddAvailabilitySlotsDTO dto, IAddAvailabilitySlotsUseCase useCase) => AddAvailabilitySlots(new AddAvailabilitySlotsDTO { DoctorId = doctorId, AvailabilitySlots = dto.AvailabilitySlots }, useCase))
             .WithOpenApi(operation => new(operation)
             {
                 Tags = tags,
@@ -28,13 +28,12 @@ public static class AvailabilitySlotsEndpoints
                         ["application/json"] = new OpenApiMediaType
                         {
 
-                            Example = new OpenApiString(JsonSerializer.Serialize(new AddAvailabilitySlotsDTO()
+                            Example = new OpenApiString(JsonSerializer.Serialize(new AddAvailabilitySlotsDTO
                             {
-                                DoctorId = Guid.NewGuid(),
                                 AvailabilitySlots = [
-                                   new AvailabilitySlotDTO(DateTime.Now),
-                                   new AvailabilitySlotDTO(DateTime.Now.AddHours(1)),
-                                   new AvailabilitySlotDTO(DateTime.Now.AddHours(2))
+                                   new AvailabilitySlotDTO { Slot = DateTime.Now},
+                                   new AvailabilitySlotDTO { Slot = DateTime.Now.AddHours(1) },
+                                   new AvailabilitySlotDTO { Slot = DateTime.Now.AddHours(2) }
                                 ]
                             })),
                         }
@@ -42,6 +41,30 @@ public static class AvailabilitySlotsEndpoints
                 }
             })
             .Produces(StatusCodes.Status201Created)
+            .Produces<string>(StatusCodes.Status400BadRequest)
+            .Produces<string>(StatusCodes.Status500InternalServerError);
+
+        app.MapDelete("/doctor/{doctorId}/availability/{slotId}", ([FromRoute] Guid doctorId, [FromRoute] Guid slotId, IRemoveAvailabilitySlotsUseCase useCase) => RemoveAvailabilitySlots(new RemoveAvailabilitySlotsDTO { DoctorId = doctorId, SlotId = slotId }, useCase))
+            .WithOpenApi(operation => new(operation)
+            {
+                Tags = tags,
+                Summary = "Remove a doctor's availability slots",
+                RequestBody = new OpenApiRequestBody()
+                {
+                    Content = new Dictionary<string, OpenApiMediaType>
+                    {
+                        ["application/json"] = new OpenApiMediaType
+                        {
+
+                            Example = new OpenApiString(JsonSerializer.Serialize(new RemoveAvailabilitySlotsDTO
+                            {
+                                SlotId = Guid.NewGuid()
+                            })),
+                        }
+                    }
+                }
+            })
+            .Produces(StatusCodes.Status200OK)
             .Produces<string>(StatusCodes.Status400BadRequest)
             .Produces<string>(StatusCodes.Status500InternalServerError);
     }
@@ -55,50 +78,12 @@ public static class AvailabilitySlotsEndpoints
         });
     }
 
-    //app.MapPost("/patients", [AllowAnonymous] ([FromBody] CreatePatientDTO dto, ICreatePatientUseCase useCase) => CreatePatient(dto, useCase))
-    //    .WithOpenApi(operation => new(operation)
-    //    {
-    //        Tags = tags,
-    //        Summary = "Register patient",
-    //        RequestBody = new OpenApiRequestBody()
-    //        {
-    //            Content = new Dictionary<string, OpenApiMediaType>
-    //            {
-    //                ["application/json"] = new OpenApiMediaType
-    //                {
-    //                    Example = new OpenApiString(JsonSerializer.Serialize(new CreatePatientDTO()
-    //                    {
-    //                        UserName = "default_patient",
-    //                        Email = "default_patient_user@email.com",
-    //                        Password = "S3cur3P@ssW0rd",
-    //                        RePassword = "S3cur3P@ssW0rd",
-    //                        Name = "Patient Default",
-    //                        CPF = "480.145.250-78",
-    //                    })),
-    //                }
-    //            }
-    //        }
-    //    })
-    //    .Produces(StatusCodes.Status201Created)
-    //    .Produces<string>(StatusCodes.Status400BadRequest)
-    //    .Produces<string>(StatusCodes.Status500InternalServerError);
+    private static async Task<IResult> RemoveAvailabilitySlots(RemoveAvailabilitySlotsDTO dto, IRemoveAvailabilitySlotsUseCase removeAvailabilitySlotsUseCase)
+    {
+        return await EndpointUtils.CallUseCase(async () =>
+        {
+            var result = await removeAvailabilitySlotsUseCase.ExecuteAsync(dto);
+            return result.IsSuccess ? Results.Ok() : Results.BadRequest(string.Join(Environment.NewLine, result.Errors));
+        });
+    }
 }
-
-//private static async Task<IResult> CreateDoctor(CreateDoctorDTO dto, ICreateDoctorUseCase createDoctorUseCase)
-//{
-//    return await EndpointUtils.CallUseCase(async () =>
-//    {
-//        var result = await createDoctorUseCase.ExecuteAsync(dto);
-//        return result.IsSuccess ? Results.Created() : Results.BadRequest(string.Join(Environment.NewLine, result.Errors));
-//    });
-//}
-
-//private static async Task<IResult> CreatePatient(CreatePatientDTO dto, ICreatePatientUseCase createPatientUseCase)
-//{
-//    return await EndpointUtils.CallUseCase(async () =>
-//    {
-//        var result = await createPatientUseCase.ExecuteAsync(dto);
-//        return result.IsSuccess ? Results.Created() : Results.BadRequest(string.Join(Environment.NewLine, result.Errors));
-//    });
-//}
-//}

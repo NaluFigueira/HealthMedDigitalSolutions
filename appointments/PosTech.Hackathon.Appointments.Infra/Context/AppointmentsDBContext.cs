@@ -17,6 +17,7 @@ public class AppointmentsDBContext : DbContext
     public DbSet<Patient> Patients { get; set; }
     public DbSet<Doctor> Doctors { get; set; }
     public DbSet<AvailabilitySlot> AvailabilitySlots { get; set; }
+    public DbSet<Appointment> Appointments { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -27,7 +28,7 @@ public class AppointmentsDBContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
+
         modelBuilder.Entity<Doctor>(entity =>
         {
             entity.ToTable("Doctors");
@@ -69,7 +70,7 @@ public class AppointmentsDBContext : DbContext
                 .IsRequired()
                 .HasMaxLength(100);
         });
-        
+
         modelBuilder.Entity<Patient>(entity =>
         {
             entity.ToTable("Patients");
@@ -81,7 +82,7 @@ public class AppointmentsDBContext : DbContext
                 .HasColumnType("NVARCHAR(250)")
                 .IsRequired()
                 .HasMaxLength(250);
-            
+
             entity.Property(e => e.Email)
                 .HasColumnName("Email")
                 .HasColumnType("NVARCHAR(250)")

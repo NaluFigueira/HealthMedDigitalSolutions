@@ -11,16 +11,10 @@ using PosTech.Hackathon.Appointments.Infra.Context;
 
 namespace PosTech.Hackathon.Appointments.Application.UseCases.AvailabilitySlots;
 
-public class AddAvailabilitySlotsUseCase : IAddAvailabilitySlotsUseCase
+public class AddAvailabilitySlotsUseCase(AppointmentsDBContext context, ILogger<AddAvailabilitySlotsUseCase> logger) : IAddAvailabilitySlotsUseCase
 {
-    private readonly AppointmentsDBContext _context;
-    private readonly ILogger<AddAvailabilitySlotsUseCase> _logger;
-
-    public AddAvailabilitySlotsUseCase(AppointmentsDBContext context, ILogger<AddAvailabilitySlotsUseCase> logger)
-    {
-        _context = context;
-        _logger = logger;
-    }
+    private readonly AppointmentsDBContext _context = context;
+    private readonly ILogger<AddAvailabilitySlotsUseCase> _logger = logger;
 
     public async Task<Result> ExecuteAsync(AddAvailabilitySlotsDTO request)
     {
@@ -40,7 +34,7 @@ public class AddAvailabilitySlotsUseCase : IAddAvailabilitySlotsUseCase
                     .Contains(slot.Slot))
             .ToListAsync();
 
-        if (existingSlots.Any())
+        if (existingSlots.Count != 0)
         {
             var errors = existingSlots.Select(slot => $"Slot {slot.Slot} already exists.");
             LogErrors(errors);
