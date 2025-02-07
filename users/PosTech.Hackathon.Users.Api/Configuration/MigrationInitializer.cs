@@ -8,6 +8,7 @@ public static class MigrationInitializer
 {
     public static void ApplyMigrations(this WebApplication app)
     {
+#if DEBUG
         Console.WriteLine("Applying migrations");
         using (var serviceScope = app.Services.CreateScope())
         {
@@ -22,5 +23,6 @@ public static class MigrationInitializer
             patientUserServiceDb!.Database.Migrate();
         }
         Console.WriteLine("Done");
+#endif
     }
 }
