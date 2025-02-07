@@ -135,18 +135,17 @@ stages:
       - job: DeployToACI
         steps:
           - task: AzureCLI@2
-            displayName: Deploy with Docker Compose to ACI
+            displayName: Deploy to ACI using Docker Compose
             inputs:
               azureSubscription: $(azureSubscriptionEndpoint) # Service connection for Azure subscription
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                # Log in to Azure Container Registry
                 az acr login --name $(imageRepository)
 
-                # Deploy to Azure Container Instances using Docker Compose
                 az container create \
                   --resource-group $(RESOURCE_GROUP) \
                   --name $(ACI_NAME) \
                   --file docker-compose.yml \
-                  --registry-login-server $(imageRepository).azurecr.io
+                  --registry-login-server $(imageRepository).azurecr.io \
+                  --assign-identity
