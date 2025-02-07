@@ -8,16 +8,15 @@ public static class MigrationInitializer
 {
     public static void ApplyMigrations(this WebApplication app)
     {
-        /*#if DEBUG
-                Console.WriteLine("Applying migrations");
-                using (var serviceScope = app.Services.CreateScope())
-                {
-                    Console.WriteLine("Appointments...");
-                    var appointmentServiceDb = serviceScope.ServiceProvider
-                                     .GetService<AppointmentsDBContext>();
-                    appointmentServiceDb!.Database.Migrate();
-                }
-                Console.WriteLine("Done");
-        #endif*/
+
+        Console.WriteLine("Applying migrations");
+        using (var serviceScope = app.Services.CreateScope())
+        {
+            Console.WriteLine("Appointments...");
+            var appointmentServiceDb = serviceScope.ServiceProvider
+                             .GetService<AppointmentsDBContext>();
+            appointmentServiceDb!.Database.Migrate();
+        }
+        Console.WriteLine("Done");
     }
 }
