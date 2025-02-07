@@ -26,6 +26,37 @@ public static class DoctorEndpoint
             .Produces<string>(StatusCodes.Status401Unauthorized)
             .Produces<string>(StatusCodes.Status500InternalServerError)
             .RequireAuthorization();
+
+        app.MapPost("/doctor/appointments/{appointmentId}/reject", [Authorize] (
+                HttpContext httpContext,
+                IRejectAppointmentUseCase rejectAppointmentUseCase,
+                Guid appointmentId) => RejectDoctorsAppointments(httpContext, rejectAppointmentUseCase, appointmentId))
+            .WithOpenApi(operation => new OpenApiOperation(operation)
+            {
+                Tags = tags,
+                Summary = "Reject an appointment",
+                Description = "Rejects an appointment request."
+            })
+            .Produces(StatusCodes.Status200OK)
+            .Produces<string>(StatusCodes.Status400BadRequest)
+            .Produces<string>(StatusCodes.Status401Unauthorized)
+            .RequireAuthorization();
+
+
+        app.MapPost("/doctor/appointments/{appointmentId}/accept", [Authorize] (
+                HttpContext httpContext,
+                IAcceptAppointmentUseCase acceptAppointmentUseCase,
+                Guid appointmentId) => AcceptDoctorsAppointments(httpContext, acceptAppointmentUseCase, appointmentId))
+            .WithOpenApi(operation => new OpenApiOperation(operation)
+            {
+                Tags = tags,
+                Summary = "Accept an appointment",
+                Description = "Accepts an appointment request."
+            })
+            .Produces(StatusCodes.Status200OK)
+            .Produces<string>(StatusCodes.Status400BadRequest)
+            .Produces<string>(StatusCodes.Status401Unauthorized)
+            .RequireAuthorization();
     }
 
     private static async Task<IResult> GetPendingDoctorsAppointments(HttpContext httpContext, IGetPendingAppointmentsUseCase getPendingAppointmentsUseCase)
@@ -38,5 +69,29 @@ public static class DoctorEndpoint
         var pendingAppointments = await getPendingAppointmentsUseCase.ExecuteAsync(doctorId);
 
         return Results.Ok(pendingAppointments.Value);
+    }
+
+    private static async Task<IResult> RejectDoctorsAppointments(HttpContext httpContext, IRejectAppointmentUseCase rejectAppointmentUseCase, Guid appointmentId)
+    {
+        var doctorIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+
+        if (string.IsNullOrEmpty(doctorIdClaim) || !Guid.TryParse(doctorIdClaim, out var doctorId))
+            return Results.Unauthorized();
+
+        await rejectAppointmentUseCase.ExecuteAsync(doctorId, appointmentId);
+
+        return Results.Ok("Appointment rejected successfully.");
+    }
+
+    private static async Task<IResult> AcceptDoctorsAppointments(HttpContext httpContext, IAcceptAppointmentUseCase acceptAppointmentUseCase, Guid appointmentId)
+    {
+        var doctorIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+
+        if (string.IsNullOrEmpty(doctorIdClaim) || !Guid.TryParse(doctorIdClaim, out var doctorId))
+            return Results.Unauthorized();
+
+        await acceptAppointmentUseCase.ExecuteAsync(doctorId, appointmentId);
+
+        return Results.Ok("Appointment accepted successfully.");
     }
 }

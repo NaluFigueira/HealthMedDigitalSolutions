@@ -6,7 +6,6 @@ using PosTech.Hackathon.Appointments.Application.UseCases.Patient;
 using PosTech.Hackathon.Appointments.Infra.Interfaces;
 using PosTech.Hackathon.Appointments.Infra.Producers;
 using PosTech.Hackathon.Appointments.Infra.Repositories;
-using PosTech.Hackathon.Appointments.Infra.Services;
 
 namespace PosTech.Hackathon.Appointments.Api.Configuration;
 
@@ -17,6 +16,8 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IAddAvailabilitySlotsUseCase, AddAvailabilitySlotsUseCase>();
         services.AddScoped<IScheduleAppointmentUseCase, ScheduleAppointmentUseCase>();
         services.AddScoped<IGetPendingAppointmentsUseCase, GetPendingAppointmentsUseCase>();
+        services.AddScoped<IRejectAppointmentUseCase, RejectAppointmentUseCase>();
+        services.AddScoped<IAcceptAppointmentUseCase, AcceptAppointmentUseCase>();
 
         return services;
     }
@@ -29,9 +30,6 @@ public static class DependencyInjectionExtensions
         //repositories
         services.AddScoped<IPatientRepository, PatientRepository>();
         services.AddScoped<IDoctorRepository, DoctorRepository>();
-
-        //services
-        services.AddScoped<IEmailService, EmailService>();
 
         services.AddScoped<IRemoveAvailabilitySlotsUseCase, RemoveAvailabilitySlotsUseCase>();
         services.AddScoped<IScheduleAppointmentUseCase, ScheduleAppointmentUseCase>();
