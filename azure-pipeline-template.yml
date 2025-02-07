@@ -27,6 +27,7 @@ variables:
   RESOURCE_GROUP: "Hackathon"
   ACI_NAME: "hackathon-container"
   azureSubscriptionEndpoint: "AzureRMServiceConnection"
+  COMPOSE_PROJECT_NAME: "healthmeddigitalsolutions"
 
 resources:
   repositories:
