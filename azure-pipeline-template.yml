@@ -154,4 +154,4 @@ stages:
               runOptions: "inline"
               inline: |
                 cd /home/$(vmUsername)/app
-                sudo docker-compose -f docker-compose-prd.yml up --pull always -d
+                sudo docker-compose -f docker-compose-prd.yml up --pull always --force-recreate -d
