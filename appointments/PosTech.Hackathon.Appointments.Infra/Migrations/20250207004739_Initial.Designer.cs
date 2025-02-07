@@ -12,8 +12,8 @@ using PosTech.Hackathon.Appointments.Infra.Context;
 namespace PosTech.Hackathon.Appointments.Infra.Migrations
 {
     [DbContext(typeof(AppointmentsDBContext))]
-    [Migration("20250206183856_PatientAppointments")]
-    partial class PatientAppointments
+    [Migration("20250207004739_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
