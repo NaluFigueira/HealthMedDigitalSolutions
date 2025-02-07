@@ -130,7 +130,7 @@ stages:
     displayName: "Deploy to the Production environment"
     pool:
       vmImage: $(vmImageName)
-    dependsOn: Push
+    #dependsOn: Push
     condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
     jobs:
       - job: DeployToVM
