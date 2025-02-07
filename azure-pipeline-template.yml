@@ -143,7 +143,7 @@ stages:
               sshEndpoint: $(sshServiceConnection)
               sourceFolder: "$(Build.SourcesDirectory)"
               contents: "docker-compose-prd.yml"
-              targetFolder: "/home/$(vmUsername)/app"
+              targetFolder: "/home/app"
               clearTargetFolder: true
               overwrite: true
 
@@ -153,5 +153,5 @@ stages:
               sshEndpoint: $(sshServiceConnection)
               runOptions: "inline"
               inline: |
-                cd /home/$(vmUsername)/app
+                cd /home/app
                 sudo docker-compose -f docker-compose-prd.yml up --pull always --force-recreate -d
