@@ -17,14 +17,14 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - users_sqlserver.configurator
+      - users_sqlserver
 
   appointments_api:
     image: hackathongrupo3acr.azurecr.io/healthmeddigitalsolutions_appointments_api:latest
     ports:
       - "8081:8081"
     depends_on:
-      - appointments_sqlserver.configurator
+      - appointments_sqlserver
     environment:
       - ASPNETCORE_URLS=http://0.0.0.0:8081
 
@@ -71,31 +71,3 @@ services:
       retries: 10
       start_period: 10s
       timeout: 3s
-
-  users_sqlserver.configurator:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    volumes:
-      - ./init:/docker-entrypoint-initdb.d
-    depends_on:
-      users_sqlserver:
-        condition: service_healthy
-    command: >
-      bash -c '
-      echo "Creating DB...";
-      opt/mssql-tools18/bin/sqlcmd -S users_sqlserver -U sa -P S3cur3P@ssW0rd -d master -C -Q "IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = '\''HackathonUsers'\'') CREATE DATABASE [HackathonUsers]";
-      echo "All done!";
-      '
-
-  appointments_sqlserver.configurator:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    volumes:
-      - ./appointments/init:/docker-entrypoint-initdb.d
-    depends_on:
-      appointments_sqlserver:
-        condition: service_healthy
-    command: >
-      bash -c '
-      echo "Creating DB...";
-      opt/mssql-tools18/bin/sqlcmd -S appointments_sqlserver -U sa -P S3cur3P@ssW0rd -d master -C -Q "IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = '\''AppointmentsDb'\'') CREATE DATABASE [AppointmentsDb]";
-      echo "All done!";
-      '
