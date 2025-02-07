@@ -154,6 +154,4 @@ stages:
               runOptions: "inline"
               inline: |
                 cd /home/$(vmUsername)/app
-                sudo docker login $(imageRepository).azurecr.io
-                sudo docker-compose -f docker-compose-prd.yml down  
                 sudo docker-compose -f docker-compose-prd.yml up --pull always -d
