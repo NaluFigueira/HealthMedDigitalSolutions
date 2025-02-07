@@ -152,7 +152,10 @@ stages:
               sshEndpoint: $(sshServiceConnection)
               runOptions: "inline"
               inline: |
-                cd /home/$(vmUsername)/app
-                az acr login --name hackathongrupo3acr
+                cd /home/$(vmUsername)/app > /dev/null 2>&1
+                az acr login --name hackathongrupo3acr > /dev/null 2>&1
                 sudo docker-compose -f docker-compose-prd.yml down > /dev/null 2>&1
+                sudo docker rm app_appointments_sqlserver_data > /dev/null 2>&1
+                sudo docker rm app_rabbitmq_data > /dev/null 2>&1
+                sudo docker rm app_users_sqlserver_data > /dev/null 2>&1
                 sudo docker-compose -f docker-compose-prd.yml up --build -d > /dev/null 2>&1
