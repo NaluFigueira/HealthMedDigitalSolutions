@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PosTech.Hackathon.Users.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0f3be5050e826409164a24ce30440457b3604ecf")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9f4484d7b10742bc8d3cf63e9c9ed5f9662db243")]
 [assembly: System.Reflection.AssemblyProductAttribute("PosTech.Hackathon.Users.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PosTech.Hackathon.Users.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
