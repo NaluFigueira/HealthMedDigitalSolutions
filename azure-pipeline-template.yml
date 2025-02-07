@@ -27,6 +27,7 @@ variables:
   azureSubscription: "Azure for Students"
   RESOURCE_GROUP: "Hackathon"
   ACI_NAME: "hackathon-container"
+  azureSubscriptionEndpoint: "AzureRMServiceConnection"
 
 resources:
   repositories:
@@ -108,7 +109,7 @@ stages:
             displayName: "Build Image"
             inputs:
               containerRegistryType: "Azure Container Registry"
-              azureSubscriptionEndpoint: $(dockerRegistryServiceConnection)
+              azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
               azureContainerRegistry: $(imageRepository)
               dockerComposeFile: "./docker-compose.yml"
               action: "Build services"
@@ -117,7 +118,7 @@ stages:
             displayName: "Push Service Image to Container Registry"
             inputs:
               containerRegistryType: "Azure Container Registry"
-              azureSubscriptionEndpoint: $(dockerRegistryServiceConnection)
+              azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
               azureContainerRegistry: $(imageRepository)
               dockerComposeFile: "./docker-compose.yml"
               action: "Push services"
