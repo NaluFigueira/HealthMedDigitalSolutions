@@ -176,35 +176,6 @@ namespace PosTech.Hackathon.Appointments.Infra.Migrations
                 {
                     b.Navigation("Appointments");
                 });
-
-            modelBuilder.Entity("PosTech.Hackathon.Appointments.Domain.Entities.Appointment", b =>
-                {
-                    b.HasOne("PosTech.Hackathon.Appointments.Domain.Entities.Doctor", "Doctor")
-                        .WithMany("Appointments")
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PosTech.Hackathon.Appointments.Domain.Entities.Patient", "Patient")
-                        .WithMany("Appointments")
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Doctor");
-
-                    b.Navigation("Patient");
-                });
-
-            modelBuilder.Entity("PosTech.Hackathon.Appointments.Domain.Entities.Doctor", b =>
-                {
-                    b.Navigation("Appointments");
-                });
-
-            modelBuilder.Entity("PosTech.Hackathon.Appointments.Domain.Entities.Patient", b =>
-                {
-                    b.Navigation("Appointments");
-                });
 #pragma warning restore 612, 618
         }
     }
