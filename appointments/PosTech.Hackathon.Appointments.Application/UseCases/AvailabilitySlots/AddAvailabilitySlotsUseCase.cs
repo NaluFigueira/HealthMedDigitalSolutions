@@ -48,7 +48,8 @@ public class AddAvailabilitySlotsUseCase(AppointmentsDBContext context, ILogger<
                 {
                     Id = Guid.NewGuid(),
                     DoctorId = request.DoctorId,
-                    Slot = slot.Slot
+                    Slot = slot.Slot,
+                    IsAvailable = true
                 })
                 .ToList();
 
