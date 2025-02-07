@@ -1,0 +1,88 @@
+parameters:
+  - name: baseMSPath
+    type: string
+    default: ""
+  - name: dockerfilePath
+    type: string
+    default: ""
+  - name: testsProjectPath
+    type: string
+    default: ""
+  - name: unitTestFilter
+    type: string
+    default: ""
+
+variables:
+  buildConfiguration: "Release"
+  dotnetSdkVersion: "8.0.303"
+  dockerfilePath: ${{parameters.dockerfilePath}}
+  testsProjectPath: ${{parameters.testsProjectPath}}
+  unitTestFilter: ${{parameters.unitTestFilter}}
+  baseMSPath: ${{parameters.baseMSPath}}
+  vmImageName: "ubuntu-latest"
+
+resources:
+  repositories:
+    - repository: self
+
+stages:
+  - stage: "Build"
+    displayName: "Build"
+    pool:
+      vmImage: $(vmImageName)
+    jobs:
+      - job: "Build"
+        displayName: "Build Job"
+        steps:
+          - task: UseDotNet@2
+            displayName: "Use .NET SDK $(dotnetSdkVersion)"
+            inputs:
+              packageType: "sdk"
+              version: "$(dotnetSdkVersion)"
+
+          - task: DotNetCoreCLI@2
+            displayName: "Restore project"
+            inputs:
+              command: "restore"
+              projects: $(baseMSPath)
+
+          - task: DotNetCoreCLI@2
+            displayName: "Build project"
+            inputs:
+              command: "build"
+              arguments: "--no-restore --configuration $(buildConfiguration)"
+              projects: $(baseMSPath)
+
+          - task: DotNetCoreCLI@2
+            displayName: "Publish project"
+            inputs:
+              command: "publish"
+              projects: $(baseMSPath)
+              publishWebProjects: false
+              arguments: "--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)"
+              zipAfterPublish: true
+
+          - publish: "$(Build.ArtifactStagingDirectory)"
+            artifact: drop
+
+  - stage: "Tests"
+    displayName: Run unit tests
+    pool:
+      vmImage: $(vmImageName)
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - job: RunTest
+        displayName: Run unit tests
+        steps:
+          - task: UseDotNet@2
+            displayName: "Use .NET SDK $(dotnetSdkVersion)"
+            inputs:
+              packageType: "sdk"
+              version: "$(dotnetSdkVersion)"
+          - task: DotNetCoreCLI@2
+            displayName: Run unit tests
+            inputs:
+              command: "test"
+              arguments: $(unitTestFilter)
+              projects: $(testsProjectPath)

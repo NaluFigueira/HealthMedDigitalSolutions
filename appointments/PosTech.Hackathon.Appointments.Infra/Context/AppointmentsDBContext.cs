@@ -71,5 +71,15 @@ public class AppointmentsDBContext : DbContext
                   .WithMany(p => p.Appointments)
                   .HasForeignKey(e => e.PatientId);
         });
+
+        modelBuilder.Entity<Appointment>()
+            .HasOne(a => a.Doctor)
+            .WithMany(d => d.Appointments)
+            .HasForeignKey(a => a.DoctorId);
+
+        modelBuilder.Entity<Appointment>()
+            .HasOne(a => a.Patient)
+            .WithMany(p => p.Appointments)
+            .HasForeignKey(a => a.PatientId);
     }
 }

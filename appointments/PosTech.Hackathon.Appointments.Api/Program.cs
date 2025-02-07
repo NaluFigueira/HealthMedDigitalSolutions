@@ -27,5 +27,6 @@ app.MapAvailabilitySlotsEndpoints();
 app.MapAppointmentsEndpoints();
 app.MapDoctorEndpoints();
 app.MapScheduleAppointmentEndpoints();
+app.MapDoctorEndpoints();
 
 app.Run();

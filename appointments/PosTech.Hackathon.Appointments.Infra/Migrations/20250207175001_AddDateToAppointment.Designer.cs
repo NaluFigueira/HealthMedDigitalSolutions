@@ -12,8 +12,8 @@ using PosTech.Hackathon.Appointments.Infra.Context;
 namespace PosTech.Hackathon.Appointments.Infra.Migrations
 {
     [DbContext(typeof(AppointmentsDBContext))]
-    [Migration("20250206183856_PatientAppointments")]
-    partial class PatientAppointments
+    [Migration("20250207175001_AddDateToAppointment")]
+    partial class AddDateToAppointment
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,6 +30,9 @@ namespace PosTech.Hackathon.Appointments.Infra.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("DoctorConfirmationPending")
                         .HasColumnType("bit");

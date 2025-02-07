@@ -29,6 +29,8 @@ services:
       - "8081:8081"
     depends_on:
       - appointments_sqlserver.configurator
+    environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:8081
 
   users_sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -86,7 +88,7 @@ services:
       echo "Creating DB...";
       opt/mssql-tools18/bin/sqlcmd -S users_sqlserver -U sa -P 'S3cur3P@ssW0rd' -d master -C -Q "IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = '\''HackathonUsers'\'') CREATE DATABASE [HackathonUsers]";
       echo "All done!";
-      ' 
+      '
 
   appointments_sqlserver.configurator:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -100,4 +102,4 @@ services:
       echo "Creating DB...";
       opt/mssql-tools18/bin/sqlcmd -S appointments_sqlserver -U sa -P 'S3cur3P@ssW0rd' -d master -C -Q "IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = '\''AppointmentsDb'\'') CREATE DATABASE [AppointmentsDb]";
       echo "All done!";
-      ' 
+      '
