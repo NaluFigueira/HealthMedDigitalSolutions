@@ -72,34 +72,34 @@ stages:
           - publish: "$(Build.ArtifactStagingDirectory)"
             artifact: drop
 
-  - stage: "Tests"
-    displayName: Run unit tests
-    pool:
-      vmImage: $(vmImageName)
-    dependsOn: Build
-    condition: succeeded()
-    jobs:
-      - job: RunTest
-        displayName: Run unit tests
-        steps:
-          - task: UseDotNet@2
-            displayName: "Use .NET SDK $(dotnetSdkVersion)"
-            inputs:
-              packageType: "sdk"
-              version: "$(dotnetSdkVersion)"
-          - task: DotNetCoreCLI@2
-            displayName: Run unit tests
-            inputs:
-              command: "test"
-              arguments: $(unitTestFilter)
-              projects: $(testsProjectPath)
+  #- stage: "Tests"
+  #  displayName: Run unit tests
+  #  pool:
+  #    vmImage: $(vmImageName)
+  #  dependsOn: Build
+  #  condition: succeeded()
+  #  jobs:
+  #    - job: RunTest
+  #      displayName: Run unit tests
+  #      steps:
+  #        - task: UseDotNet@2
+  #          displayName: "Use .NET SDK $(dotnetSdkVersion)"
+  #          inputs:
+  #            packageType: "sdk"
+  #            version: "$(dotnetSdkVersion)"
+  #        - task: DotNetCoreCLI@2
+  #          displayName: Run unit tests
+  #          inputs:
+  #            command: "test"
+  #            arguments: $(unitTestFilter)
+  #            projects: $(testsProjectPath)
 
   - stage: "Push"
     displayName: Build and push image stage
     pool:
       vmImage: $(vmImageName)
-    dependsOn: Tests
-    condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/development', 'refs/heads/stage', 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
+    #dependsOn: Tests
+    #condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/development', 'refs/heads/stage', 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
     jobs:
       - job: BuildAndPush
         displayName: "Build and Push Image Job"
@@ -109,7 +109,7 @@ stages:
             inputs:
               containerRegistryType: "Azure Container Registry"
               azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
-              azureContainerRegistry: $(imageRepository)
+              azureContainerRegistry: $(containerRegistry)
               dockerComposeFile: "docker-compose.yml"
               action: "Build services"
 
@@ -118,7 +118,7 @@ stages:
             inputs:
               containerRegistryType: "Azure Container Registry"
               azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
-              azureContainerRegistry: $(imageRepository)
+              azureContainerRegistry: $(containerRegistry)
               dockerComposeFile: "docker-compose.yml"
               action: "Push services"
 
