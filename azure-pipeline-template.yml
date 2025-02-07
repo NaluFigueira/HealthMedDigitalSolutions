@@ -125,36 +125,28 @@ stages:
               action: "Push services"
               projectName: $(COMPOSE_PROJECT_NAME)
 
-  #- stage: "Production"
-  #  displayName: "Deploy to the Production environment"
-  #  pool:
-  #    vmImage: $(vmImageName)
-  #  dependsOn: Push
-  #  condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
-  #  jobs:
-  #    - job: Deploy
-  #      displayName: "Deploy Container"
-  #      steps:
-  #        - task: AzureCLI@2
-  #          displayName: "Login no ACR"
-  #          inputs:
-  #            azureSubscription: $(azureSubscriptionEndpoint)
-  #            scriptType: "bash"
-  #            scriptLocation: "inlineScript"
-  #            inlineScript: |
-  #              az acr login --name $(containerRegistry)
-#
-#        - task: AzureCLI@2
-#          displayName: "Criar ou atualizar ACI"
-#          inputs:
-#            azureSubscription: $(azureSubscriptionEndpoint)
-#            scriptType: "bash"
-#            scriptLocation: "inlineScript"
-#            inlineScript: |
-#              az container create \
-#                --resource-group $(RESOURCE_GROUP) \
-#                --name $(ACI_NAME) \
-#                --image $(containerRegistry)/$(imageRepository):$(tag) \
-#                --dns-name-label $(ACI_NAME)-dns \
-#                --ports 80 \
-#                --assign-identity
+  - stage: "Production"
+    displayName: "Deploy to the Production environment"
+    pool:
+      vmImage: $(vmImageName)
+    dependsOn: Push
+    condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
+    jobs:
+      - job: DeployToACI
+        steps:
+          - task: AzureCLI@2
+            displayName: Deploy with Docker Compose to ACI
+            inputs:
+              azureSubscription: $(azureSubscriptionEndpoint) # Service connection for Azure subscription
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                # Log in to Azure Container Registry
+                az acr login --name $(imageRepository)
+
+                # Deploy to Azure Container Instances using Docker Compose
+                az container create \
+                  --resource-group $(RESOURCE_GROUP) \
+                  --name $(ACI_NAME) \
+                  --file docker-compose.yml \
+                  --registry-login-server $(imageRepository).azurecr.io
