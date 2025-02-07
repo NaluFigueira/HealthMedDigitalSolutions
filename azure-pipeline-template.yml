@@ -15,147 +15,74 @@ parameters:
 variables:
   buildConfiguration: "Release"
   dotnetSdkVersion: "8.0.303"
-  dockerRegistryServiceConnection: "ca7ce8eb-b5a7-46af-95db-000a97982b57"
-  imageRepository: "hackathongrupo3acr"
-  containerRegistry: "hackathongrupo3acr.azurecr.io"
   dockerfilePath: ${{parameters.dockerfilePath}}
   testsProjectPath: ${{parameters.testsProjectPath}}
   unitTestFilter: ${{parameters.unitTestFilter}}
   baseMSPath: ${{parameters.baseMSPath}}
-  tag: "$(Build.BuildId)"
   vmImageName: "ubuntu-latest"
-  RESOURCE_GROUP: "Hackathon"
-  ACI_NAME: "hackathon-container"
-  azureSubscriptionEndpoint: "AzureRMServiceConnection"
-  COMPOSE_PROJECT_NAME: "healthmeddigitalsolutions"
-  sshServiceConnection: "MyAzureVMConnection"
-  vmUsername: azureuser
 
 resources:
   repositories:
     - repository: self
 
 stages:
-  #- stage: "Build"
-  #  displayName: "Build"
-  #  pool:
-  #    vmImage: $(vmImageName)
-  #  jobs:
-  #    - job: "Build"
-  #      displayName: "Build Job"
-  #      steps:
-  #        - task: UseDotNet@2
-  #          displayName: "Use .NET SDK $(dotnetSdkVersion)"
-  #          inputs:
-  #            packageType: "sdk"
-  #            version: "$(dotnetSdkVersion)"
-  #
-  #        - task: DotNetCoreCLI@2
-  #          displayName: "Restore project"
-  #          inputs:
-  #            command: "restore"
-  #            projects: $(baseMSPath)
-  #
-  #        - task: DotNetCoreCLI@2
-  #          displayName: "Build project"
-  #          inputs:
-  #            command: "build"
-  #            arguments: "--no-restore --configuration $(buildConfiguration)"
-  #            projects: $(baseMSPath)
-  #
-  #        - task: DotNetCoreCLI@2
-  #          displayName: "Publish project"
-  #          inputs:
-  #            command: "publish"
-  #            projects: $(baseMSPath)
-  #            publishWebProjects: false
-  #            arguments: "--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)"
-  #            zipAfterPublish: true
-  #
-  #        - publish: "$(Build.ArtifactStagingDirectory)"
-  #          artifact: drop
-
-  #- stage: "Tests"
-  #  displayName: Run unit tests
-  #  pool:
-  #    vmImage: $(vmImageName)
-  #  dependsOn: Build
-  #  condition: succeeded()
-  #  jobs:
-  #    - job: RunTest
-  #      displayName: Run unit tests
-  #      steps:
-  #        - task: UseDotNet@2
-  #          displayName: "Use .NET SDK $(dotnetSdkVersion)"
-  #          inputs:
-  #            packageType: "sdk"
-  #            version: "$(dotnetSdkVersion)"
-  #        - task: DotNetCoreCLI@2
-  #          displayName: Run unit tests
-  #          inputs:
-  #            command: "test"
-  #            arguments: $(unitTestFilter)
-  #            projects: $(testsProjectPath)
-
-  #  - stage: "Push"
-  #    displayName: Build and push image stage
-  #    pool:
-  #      vmImage: $(vmImageName)
-  #    #dependsOn: Tests
-  #    #condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/development', 'refs/heads/stage', 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
-  #    jobs:
-  #      - job: BuildAndPush
-  #        displayName: "Build and Push Image Job"
-  #        steps:
-  #          - task: DockerCompose@0
-  #            displayName: "Build Image"
-  #            inputs:
-  #              containerRegistryType: "Azure Container Registry"
-  #              azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
-  #              azureContainerRegistry: $(containerRegistry)
-  #              dockerComposeFile: "docker-compose.yml"
-  #              action: "Build services"
-  #              projectName: $(COMPOSE_PROJECT_NAME)
-  #          - task: DockerCompose@0
-  #            displayName: "Push Service Image to Container Registry"
-  #            inputs:
-  #              containerRegistryType: "Azure Container Registry"
-  #              azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
-  #              azureContainerRegistry: $(containerRegistry)
-  #              dockerComposeFile: "docker-compose.yml"
-  #              action: "Push services"
-  #              projectName: $(COMPOSE_PROJECT_NAME)
-
-  - stage: "Production"
-    displayName: "Deploy to the Production environment"
+  - stage: "Build"
+    displayName: "Build"
     pool:
       vmImage: $(vmImageName)
-    #dependsOn: Push
-    condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
     jobs:
-      - job: DeployToVM
-        displayName: "Deploy Docker Compose to VM"
+      - job: "Build"
+        displayName: "Build Job"
         steps:
-          - task: CopyFilesOverSSH@0
-            displayName: "Copy Docker Compose and related files to VM"
+          - task: UseDotNet@2
+            displayName: "Use .NET SDK $(dotnetSdkVersion)"
             inputs:
-              sshEndpoint: $(sshServiceConnection)
-              sourceFolder: "$(Build.SourcesDirectory)"
-              contents: "docker-compose-prd.yml"
-              targetFolder: "/home/$(vmUsername)/app"
-              clearTargetFolder: true
-              overwrite: true
+              packageType: "sdk"
+              version: "$(dotnetSdkVersion)"
 
-          - task: SSH@0
-            displayName: "Run Docker Compose in VM"
+          - task: DotNetCoreCLI@2
+            displayName: "Restore project"
             inputs:
-              sshEndpoint: $(sshServiceConnection)
-              runOptions: "inline"
-              inline: |
-                cd /home/$(vmUsername)/app > /dev/null 2>&1
-                az acr login --name hackathongrupo3acr > /dev/null 2>&1
-                sudo docker-compose -f docker-compose-prd.yml down > /dev/null 2>&1
-                sudo docker volume rm app_appointments_sqlserver_data > /dev/null 2>&1
-                sudo docker volume rm app_rabbitmq_data > /dev/null 2>&1
-                sudo docker volume rm app_users_sqlserver_data > /dev/null 2>&1
-                sudo docker-compose -f docker-compose-prd.yml up --build -d > /dev/null 2>&1
+              command: "restore"
+              projects: $(baseMSPath)
+
+          - task: DotNetCoreCLI@2
+            displayName: "Build project"
+            inputs:
+              command: "build"
+              arguments: "--no-restore --configuration $(buildConfiguration)"
+              projects: $(baseMSPath)
+
+          - task: DotNetCoreCLI@2
+            displayName: "Publish project"
+            inputs:
+              command: "publish"
+              projects: $(baseMSPath)
+              publishWebProjects: false
+              arguments: "--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)"
+              zipAfterPublish: true
+
+          - publish: "$(Build.ArtifactStagingDirectory)"
+            artifact: drop
+
+  - stage: "Tests"
+    displayName: Run unit tests
+    pool:
+      vmImage: $(vmImageName)
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - job: RunTest
+        displayName: Run unit tests
+        steps:
+          - task: UseDotNet@2
+            displayName: "Use .NET SDK $(dotnetSdkVersion)"
+            inputs:
+              packageType: "sdk"
+              version: "$(dotnetSdkVersion)"
+          - task: DotNetCoreCLI@2
+            displayName: Run unit tests
+            inputs:
+              command: "test"
+              arguments: $(unitTestFilter)
+              projects: $(testsProjectPath)

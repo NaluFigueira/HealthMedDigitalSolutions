@@ -1,0 +1,74 @@
+variables:
+  imageRepository: "hackathongrupo3acr"
+  containerRegistry: "hackathongrupo3acr.azurecr.io"
+  vmImageName: "ubuntu-latest"
+  azureSubscriptionEndpoint: "AzureRMServiceConnection"
+  COMPOSE_PROJECT_NAME: "healthmeddigitalsolutions"
+  sshServiceConnection: "MyAzureVMConnection"
+  vmUsername: azureuser
+
+resources:
+  repositories:
+    - repository: self
+
+stages:
+  - stage: "Push"
+    displayName: Build and push image stage
+    pool:
+      vmImage: $(vmImageName)
+    jobs:
+      - job: BuildAndPush
+        displayName: "Build and Push Image Job"
+        steps:
+          - task: DockerCompose@0
+            displayName: "Build Image"
+            inputs:
+              containerRegistryType: "Azure Container Registry"
+              azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+              azureContainerRegistry: $(containerRegistry)
+              dockerComposeFile: "docker-compose.yml"
+              action: "Build services"
+              projectName: $(COMPOSE_PROJECT_NAME)
+          - task: DockerCompose@0
+            displayName: "Push Service Image to Container Registry"
+            inputs:
+              containerRegistryType: "Azure Container Registry"
+              azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+              azureContainerRegistry: $(containerRegistry)
+              dockerComposeFile: "docker-compose.yml"
+              action: "Push services"
+              projectName: $(COMPOSE_PROJECT_NAME)
+
+  - stage: "Production"
+    displayName: "Deploy to the Production environment"
+    pool:
+      vmImage: $(vmImageName)
+    dependsOn: Push
+    condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
+    jobs:
+      - job: DeployToVM
+        displayName: "Deploy Docker Compose to VM"
+        steps:
+          - task: CopyFilesOverSSH@0
+            displayName: "Copy Docker Compose and related files to VM"
+            inputs:
+              sshEndpoint: $(sshServiceConnection)
+              sourceFolder: "$(Build.SourcesDirectory)"
+              contents: "docker-compose-prd.yml"
+              targetFolder: "/home/$(vmUsername)/app"
+              clearTargetFolder: true
+              overwrite: true
+
+          - task: SSH@0
+            displayName: "Run Docker Compose in VM"
+            inputs:
+              sshEndpoint: $(sshServiceConnection)
+              runOptions: "inline"
+              inline: |
+                cd /home/$(vmUsername)/app > /dev/null 2>&1
+                az acr login --name $(imageRepository) > /dev/null 2>&1
+                sudo docker-compose -f docker-compose-prd.yml down > /dev/null 2>&1
+                sudo docker volume rm app_appointments_sqlserver_data > /dev/null 2>&1
+                sudo docker volume rm app_rabbitmq_data > /dev/null 2>&1
+                sudo docker volume rm app_users_sqlserver_data > /dev/null 2>&1
+                sudo docker-compose -f docker-compose-prd.yml up --build -d > /dev/null 2>&1
