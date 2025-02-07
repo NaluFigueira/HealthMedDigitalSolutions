@@ -24,7 +24,6 @@ variables:
   baseMSPath: ${{parameters.baseMSPath}}
   tag: "$(Build.BuildId)"
   vmImageName: "ubuntu-latest"
-  azureSubscription: "Azure for Students"
   RESOURCE_GROUP: "Hackathon"
   ACI_NAME: "hackathon-container"
   azureSubscriptionEndpoint: "AzureRMServiceConnection"
@@ -136,7 +135,7 @@ stages:
           - task: AzureCLI@2
             displayName: "Login no ACR"
             inputs:
-              azureSubscription: $(azureSubscription)
+              azureSubscription: $(azureSubscriptionEndpoint)
               scriptType: "bash"
               scriptLocation: "inlineScript"
               inlineScript: |
@@ -145,7 +144,7 @@ stages:
           - task: AzureCLI@2
             displayName: "Criar ou atualizar ACI"
             inputs:
-              azureSubscription: $(azureSubscription)
+              azureSubscription: $(azureSubscriptionEndpoint)
               scriptType: "bash"
               scriptLocation: "inlineScript"
               inlineScript: |
