@@ -15,7 +15,7 @@ parameters:
 variables:
   buildConfiguration: "Release"
   dotnetSdkVersion: "8.0.303"
-  dockerRegistryServiceConnection: "HackathonGrupo3ACR"
+  dockerRegistryServiceConnection: "ca7ce8eb-b5a7-46af-95db-000a97982b57"
   imageRepository: "hackathongrupo3acr"
   containerRegistry: "hackathongrupo3acr.azurecr.io"
   dockerfilePath: ${{parameters.dockerfilePath}}
