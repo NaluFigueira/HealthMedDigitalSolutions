@@ -149,7 +149,6 @@ stages:
 
           - task: SSH@0
             displayName: "Run Docker Compose in VM"
-            continueOnError: true
             inputs:
               sshEndpoint: $(sshServiceConnection)
               runOptions: "inline"
@@ -157,4 +156,4 @@ stages:
                 cd /home/$(vmUsername)/app
                 az acr login --name hackathongrupo3acr
                 sudo docker-compose -f docker-compose-prd.yml down 
-                sudo docker-compose -f docker-compose-prd.yml up --build -d
+                sudo docker-compose -f docker-compose-prd.yml up --build -d -q
