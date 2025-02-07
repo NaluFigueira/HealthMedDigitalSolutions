@@ -143,7 +143,7 @@ stages:
               sshEndpoint: $(sshServiceConnection)
               sourceFolder: "$(Build.SourcesDirectory)"
               contents: "docker-compose-prd.yml"
-              targetFolder: "/home/app"
+              targetFolder: "/home/$(vmUsername)/app"
               clearTargetFolder: true
               overwrite: true
 
@@ -153,5 +153,7 @@ stages:
               sshEndpoint: $(sshServiceConnection)
               runOptions: "inline"
               inline: |
-                cd /home/app
-                sudo docker-compose -f docker-compose-prd.yml up --pull always --force-recreate -d
+                cd /home/$(vmUsername)/app
+                az acr login --name hackathongrupo3acr
+                sudo docker-compose -f docker-compose-prd.yml down 
+                sudo docker-compose -f docker-compose-prd.yml up --build -d

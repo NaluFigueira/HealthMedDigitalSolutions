@@ -20,11 +20,13 @@ services:
       - users_sqlserver.configurator
 
   appointments_api:
-    image: hackathongrupo3acr.azurecr.io/healthmeddigitalsolutions_users_api:latest
+    image: hackathongrupo3acr.azurecr.io/healthmeddigitalsolutions_appointments_api:latest
     ports:
       - "8081:8081"
     depends_on:
       - appointments_sqlserver.configurator
+    environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:8081
 
   users_sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
