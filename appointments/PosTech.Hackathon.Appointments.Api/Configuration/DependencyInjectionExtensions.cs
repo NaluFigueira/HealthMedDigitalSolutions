@@ -1,6 +1,7 @@
 using PosTech.Hackathon.Appointments.Application.Interfaces.UseCases;
 using PosTech.Hackathon.Appointments.Application.UseCases;
 using PosTech.Hackathon.Appointments.Application.UseCases.AvailabilitySlots;
+using PosTech.Hackathon.Appointments.Application.UseCases.Doctor;
 using PosTech.Hackathon.Appointments.Application.UseCases.Patient;
 using PosTech.Hackathon.Appointments.Infra.Interfaces;
 using PosTech.Hackathon.Appointments.Infra.Producers;
@@ -15,6 +16,7 @@ public static class DependencyInjectionExtensions
     {
         services.AddScoped<IAddAvailabilitySlotsUseCase, AddAvailabilitySlotsUseCase>();
         services.AddScoped<IScheduleAppointmentUseCase, ScheduleAppointmentUseCase>();
+        services.AddScoped<IGetPendingAppointmentsUseCase, GetPendingAppointmentsUseCase>();
 
         return services;
     }

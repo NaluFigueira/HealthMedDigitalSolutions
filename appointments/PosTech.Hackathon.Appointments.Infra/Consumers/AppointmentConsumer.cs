@@ -29,11 +29,11 @@ public class AppointmentConsumer(
         if (!patientExists) return;
 
         var availableSlot = await db.AvailabilitySlots
-            .FirstOrDefaultAsync(h => h.DoctorId == entity.DoctorId && h.Slot == entity.AvailabilitySlot!.Slot);
+            .FirstOrDefaultAsync(h => h.DoctorId == entity.DoctorId && h.Slot == entity.Date && h.IsAvailable == true);
 
         if (availableSlot == null) return;
 
-        db.AvailabilitySlots.Remove(availableSlot);
+        availableSlot.IsAvailable = false;
 
         var appointment = new Appointment
         {
@@ -41,6 +41,7 @@ public class AppointmentConsumer(
             DoctorId = entity.DoctorId,
             PatientId = entity.PatientId,
             SlotId = entity.SlotId,
+            Date = entity.Date,
             DoctorConfirmationPending = true,
             Rejected = false
         };

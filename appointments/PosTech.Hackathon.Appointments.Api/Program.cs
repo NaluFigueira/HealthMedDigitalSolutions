@@ -26,5 +26,6 @@ app.ApplyMigrations();
 app.MapAvailabilitySlotsEndpoints();
 app.MapAppointmentsEndpoints();
 app.MapScheduleAppointmentEndpoints();
+app.MapDoctorEndpoints();
 
 app.Run();

@@ -3,5 +3,5 @@ public class ScheduleAppointmentDTO
 {
     public required string CRM { get; set; }
 
-    public required DateTime Date { get; set; }
+    public required Guid SlotId { get; set; }
 }

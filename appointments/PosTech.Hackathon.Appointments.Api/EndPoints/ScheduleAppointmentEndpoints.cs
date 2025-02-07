@@ -39,15 +39,10 @@ public static class ScheduleAppointmentEndpoints
                                 {
                                     ["doctorCrm"] =
                                         new() { Type = "string", Description = "Doctor's CRM" },
-                                    ["scheduledTime"] =
-                                        new()
-                                        {
-                                            Type = "string",
-                                            Format = "date-time",
-                                            Description = "Scheduled appointment time"
-                                        }
+                                    ["slotId"] =
+                                        new() { Type = "Guid", Description = "Slot Id" },
                                 },
-                                Required = new HashSet<string> { "doctorCrm", "scheduledTime" }
+                                Required = new HashSet<string> { "doctorCrm", "slotId" }
                             }
                         }
                     }
