@@ -97,35 +97,35 @@ stages:
   #            arguments: $(unitTestFilter)
   #            projects: $(testsProjectPath)
 
-  - stage: "Push"
-    displayName: Build and push image stage
-    pool:
-      vmImage: $(vmImageName)
-    #dependsOn: Tests
-    #condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/development', 'refs/heads/stage', 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
-    jobs:
-      - job: BuildAndPush
-        displayName: "Build and Push Image Job"
-        steps:
-          - task: DockerCompose@0
-            displayName: "Build Image"
-            inputs:
-              containerRegistryType: "Azure Container Registry"
-              azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
-              azureContainerRegistry: $(containerRegistry)
-              dockerComposeFile: "docker-compose.yml"
-              action: "Build services"
-              projectName: $(COMPOSE_PROJECT_NAME)
-
-          - task: DockerCompose@0
-            displayName: "Push Service Image to Container Registry"
-            inputs:
-              containerRegistryType: "Azure Container Registry"
-              azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
-              azureContainerRegistry: $(containerRegistry)
-              dockerComposeFile: "docker-compose.yml"
-              action: "Push services"
-              projectName: $(COMPOSE_PROJECT_NAME)
+  # - stage: "Push"
+  #   displayName: Build and push image stage
+  #   pool:
+  #     vmImage: $(vmImageName)
+  #   #dependsOn: Tests
+  #   #condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/development', 'refs/heads/stage', 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
+  #   jobs:
+  #     - job: BuildAndPush
+  #       displayName: "Build and Push Image Job"
+  #       steps:
+  #         - task: DockerCompose@0
+  #           displayName: "Build Image"
+  #           inputs:
+  #             containerRegistryType: "Azure Container Registry"
+  #             azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+  #             azureContainerRegistry: $(containerRegistry)
+  #             dockerComposeFile: "docker-compose.yml"
+  #             action: "Build services"
+  #             projectName: $(COMPOSE_PROJECT_NAME)
+  #
+  #         - task: DockerCompose@0
+  #           displayName: "Push Service Image to Container Registry"
+  #           inputs:
+  #             containerRegistryType: "Azure Container Registry"
+  #             azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+  #             azureContainerRegistry: $(containerRegistry)
+  #             dockerComposeFile: "docker-compose.yml"
+  #             action: "Push services"
+  #             projectName: $(COMPOSE_PROJECT_NAME)
 
   - stage: "Production"
     displayName: "Deploy to the Production environment"
@@ -155,6 +155,6 @@ stages:
               inline: |
                 cd /home/$(vmUsername)/app
                 sudo docker login $(imageRepository).azurecr.io
-                sudo docker-compose -f docker-compose down  
-                sudo docker-compose -f docker-compose-prd down  
-                sudo docker-compose -f docker-compose-prd up --pull always -d
+                sudo docker-compose -f docker-compose.yml down  
+                sudo docker-compose -f docker-compose-prd.yml down  
+                sudo docker-compose -f docker-compose-prd.yml up --pull always -d
