@@ -110,7 +110,7 @@ stages:
               containerRegistryType: "Azure Container Registry"
               azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
               azureContainerRegistry: $(imageRepository)
-              dockerComposeFile: "./docker-compose.yml"
+              dockerComposeFile: "docker-compose.yml"
               action: "Build services"
 
           - task: DockerCompose@0
@@ -119,7 +119,7 @@ stages:
               containerRegistryType: "Azure Container Registry"
               azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
               azureContainerRegistry: $(imageRepository)
-              dockerComposeFile: "./docker-compose.yml"
+              dockerComposeFile: "docker-compose.yml"
               action: "Push services"
 
   - stage: "Production"
