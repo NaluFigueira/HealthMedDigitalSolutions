@@ -27,6 +27,7 @@ variables:
   RESOURCE_GROUP: "Hackathon"
   ACI_NAME: "hackathon-container"
   azureSubscriptionEndpoint: "AzureRMServiceConnection"
+  COMPOSE_PROJECT_NAME: healthmeddigitalsolutions
 
 resources:
   repositories:
@@ -112,6 +113,7 @@ stages:
               azureContainerRegistry: $(containerRegistry)
               dockerComposeFile: "docker-compose.yml"
               action: "Build services"
+              additionalArguments: "-p $(COMPOSE_PROJECT_NAME)"
 
           - task: DockerCompose@0
             displayName: "Push Service Image to Container Registry"
@@ -121,6 +123,7 @@ stages:
               azureContainerRegistry: $(containerRegistry)
               dockerComposeFile: "docker-compose.yml"
               action: "Push services"
+              additionalArguments: "-p $(COMPOSE_PROJECT_NAME)"
 
   - stage: "Production"
     displayName: "Deploy to the Production environment"
