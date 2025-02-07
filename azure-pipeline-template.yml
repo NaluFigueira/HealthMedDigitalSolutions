@@ -27,7 +27,6 @@ variables:
   RESOURCE_GROUP: "Hackathon"
   ACI_NAME: "hackathon-container"
   azureSubscriptionEndpoint: "AzureRMServiceConnection"
-  COMPOSE_PROJECT_NAME: healthmeddigitalsolutions
 
 resources:
   repositories:
@@ -113,7 +112,7 @@ stages:
               azureContainerRegistry: $(containerRegistry)
               dockerComposeFile: "docker-compose.yml"
               action: "Build services"
-              additionalArguments: "-p $(COMPOSE_PROJECT_NAME)"
+              additionalArguments: "-p healthmeddigitalsolutions"
 
           - task: DockerCompose@0
             displayName: "Push Service Image to Container Registry"
@@ -123,38 +122,38 @@ stages:
               azureContainerRegistry: $(containerRegistry)
               dockerComposeFile: "docker-compose.yml"
               action: "Push services"
-              additionalArguments: "-p $(COMPOSE_PROJECT_NAME)"
+              additionalArguments: "-p healthmeddigitalsolutions"
 
-  - stage: "Production"
-    displayName: "Deploy to the Production environment"
-    pool:
-      vmImage: $(vmImageName)
-    dependsOn: Push
-    condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
-    jobs:
-      - job: Deploy
-        displayName: "Deploy Container"
-        steps:
-          - task: AzureCLI@2
-            displayName: "Login no ACR"
-            inputs:
-              azureSubscription: $(azureSubscriptionEndpoint)
-              scriptType: "bash"
-              scriptLocation: "inlineScript"
-              inlineScript: |
-                az acr login --name $(containerRegistry)
-
-          - task: AzureCLI@2
-            displayName: "Criar ou atualizar ACI"
-            inputs:
-              azureSubscription: $(azureSubscriptionEndpoint)
-              scriptType: "bash"
-              scriptLocation: "inlineScript"
-              inlineScript: |
-                az container create \
-                  --resource-group $(RESOURCE_GROUP) \
-                  --name $(ACI_NAME) \
-                  --image $(containerRegistry)/$(imageRepository):$(tag) \
-                  --dns-name-label $(ACI_NAME)-dns \
-                  --ports 80 \
-                  --assign-identity
+  #- stage: "Production"
+  #  displayName: "Deploy to the Production environment"
+  #  pool:
+  #    vmImage: $(vmImageName)
+  #  dependsOn: Push
+  #  condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
+  #  jobs:
+  #    - job: Deploy
+  #      displayName: "Deploy Container"
+  #      steps:
+  #        - task: AzureCLI@2
+  #          displayName: "Login no ACR"
+  #          inputs:
+  #            azureSubscription: $(azureSubscriptionEndpoint)
+  #            scriptType: "bash"
+  #            scriptLocation: "inlineScript"
+  #            inlineScript: |
+  #              az acr login --name $(containerRegistry)
+#
+#        - task: AzureCLI@2
+#          displayName: "Criar ou atualizar ACI"
+#          inputs:
+#            azureSubscription: $(azureSubscriptionEndpoint)
+#            scriptType: "bash"
+#            scriptLocation: "inlineScript"
+#            inlineScript: |
+#              az container create \
+#                --resource-group $(RESOURCE_GROUP) \
+#                --name $(ACI_NAME) \
+#                --image $(containerRegistry)/$(imageRepository):$(tag) \
+#                --dns-name-label $(ACI_NAME)-dns \
+#                --ports 80 \
+#                --assign-identity
