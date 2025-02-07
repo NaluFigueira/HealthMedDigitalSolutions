@@ -34,44 +34,44 @@ resources:
     - repository: self
 
 stages:
-  - stage: "Build"
-    displayName: "Build"
-    pool:
-      vmImage: $(vmImageName)
-    jobs:
-      - job: "Build"
-        displayName: "Build Job"
-        steps:
-          - task: UseDotNet@2
-            displayName: "Use .NET SDK $(dotnetSdkVersion)"
-            inputs:
-              packageType: "sdk"
-              version: "$(dotnetSdkVersion)"
-
-          - task: DotNetCoreCLI@2
-            displayName: "Restore project"
-            inputs:
-              command: "restore"
-              projects: $(baseMSPath)
-
-          - task: DotNetCoreCLI@2
-            displayName: "Build project"
-            inputs:
-              command: "build"
-              arguments: "--no-restore --configuration $(buildConfiguration)"
-              projects: $(baseMSPath)
-
-          - task: DotNetCoreCLI@2
-            displayName: "Publish project"
-            inputs:
-              command: "publish"
-              projects: $(baseMSPath)
-              publishWebProjects: false
-              arguments: "--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)"
-              zipAfterPublish: true
-
-          - publish: "$(Build.ArtifactStagingDirectory)"
-            artifact: drop
+  #- stage: "Build"
+  #  displayName: "Build"
+  #  pool:
+  #    vmImage: $(vmImageName)
+  #  jobs:
+  #    - job: "Build"
+  #      displayName: "Build Job"
+  #      steps:
+  #        - task: UseDotNet@2
+  #          displayName: "Use .NET SDK $(dotnetSdkVersion)"
+  #          inputs:
+  #            packageType: "sdk"
+  #            version: "$(dotnetSdkVersion)"
+  #
+  #        - task: DotNetCoreCLI@2
+  #          displayName: "Restore project"
+  #          inputs:
+  #            command: "restore"
+  #            projects: $(baseMSPath)
+  #
+  #        - task: DotNetCoreCLI@2
+  #          displayName: "Build project"
+  #          inputs:
+  #            command: "build"
+  #            arguments: "--no-restore --configuration $(buildConfiguration)"
+  #            projects: $(baseMSPath)
+  #
+  #        - task: DotNetCoreCLI@2
+  #          displayName: "Publish project"
+  #          inputs:
+  #            command: "publish"
+  #            projects: $(baseMSPath)
+  #            publishWebProjects: false
+  #            arguments: "--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)"
+  #            zipAfterPublish: true
+  #
+  #        - publish: "$(Build.ArtifactStagingDirectory)"
+  #          artifact: drop
 
   #- stage: "Tests"
   #  displayName: Run unit tests
