@@ -15,7 +15,7 @@ parameters:
 variables:
   buildConfiguration: "Release"
   dotnetSdkVersion: "8.0.303"
-  dockerRegistryServiceConnection: "ca7ce8eb-b5a7-46af-95db-000a97982b57"
+  dockerRegistryServiceConnection: "HackathonGrupo3ACR"
   imageRepository: "hackathongrupo3acr"
   containerRegistry: "hackathongrupo3acr.azurecr.io"
   dockerfilePath: ${{parameters.dockerfilePath}}
@@ -24,6 +24,9 @@ variables:
   baseMSPath: ${{parameters.baseMSPath}}
   tag: "$(Build.BuildId)"
   vmImageName: "ubuntu-latest"
+  azureSubscription: "Azure for Students"
+  RESOURCE_GROUP: "Hackathon"
+  ACI_NAME: "hackathon-container"
 
 resources:
   repositories:
@@ -99,17 +102,25 @@ stages:
     condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/development', 'refs/heads/stage', 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
     jobs:
       - job: BuildAndPush
-        displayName: Build and push image job
+        displayName: "Build and Push Image Job"
         steps:
-          - task: Docker@2
-            displayName: Build and push service image to container registry
+          - task: DockerCompose@0
+            displayName: "Build Image"
             inputs:
-              command: buildAndPush
-              repository: $(imageRepository)
-              dockerfile: $(dockerfilePath)
-              containerRegistry: $(dockerRegistryServiceConnection)
-              tags: |
-                $(tag)
+              containerRegistryType: "Azure Container Registry"
+              azureSubscriptionEndpoint: $(dockerRegistryServiceConnection)
+              azureContainerRegistry: $(imageRepository)
+              dockerComposeFile: "./docker-compose.yml"
+              action: "Build services"
+
+          - task: DockerCompose@0
+            displayName: "Push Service Image to Container Registry"
+            inputs:
+              containerRegistryType: "Azure Container Registry"
+              azureSubscriptionEndpoint: $(dockerRegistryServiceConnection)
+              azureContainerRegistry: $(imageRepository)
+              dockerComposeFile: "./docker-compose.yml"
+              action: "Push services"
 
   - stage: "Production"
     displayName: "Deploy to the Production environment"
@@ -118,16 +129,29 @@ stages:
     dependsOn: Push
     condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
     jobs:
-      - deployment: Deploy
-        environment: production
-        #variables:
-        #- group: ''
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - download: current
-                  artifact: drop
-                - script: |
-                    echo Deployment to Production successful!
-                  displayName: "Deploy to Production"
+      - job: Deploy
+        displayName: "Deploy Container"
+        steps:
+          - task: AzureCLI@2
+            displayName: "Login no ACR"
+            inputs:
+              azureSubscription: $(azureSubscription)
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                az acr login --name $(containerRegistry)
+
+          - task: AzureCLI@2
+            displayName: "Criar ou atualizar ACI"
+            inputs:
+              azureSubscription: $(azureSubscription)
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                az container create \
+                  --resource-group $(RESOURCE_GROUP) \
+                  --name $(ACI_NAME) \
+                  --image $(containerRegistry)/$(imageRepository):$(tag) \
+                  --dns-name-label $(ACI_NAME)-dns \
+                  --ports 80 \
+                  --assign-identity
