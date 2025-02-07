@@ -140,9 +140,12 @@ stages:
           - task: CopyFilesOverSSH@0
             displayName: "Copy Docker Compose and related files to VM"
             inputs:
-              sshEndpoint: $(sshServiceConnection) # Service connection configurada para SSH
+              sshEndpoint: $(sshServiceConnection)
               sourceFolder: "$(Build.SourcesDirectory)"
+              contents: "docker-compose-prd.yml"
               targetFolder: "/home/$(vmUsername)/app"
+              clearTargetFolder: true
+              overwrite: true
 
           - task: SSH@0
             displayName: "Run Docker Compose in VM"
