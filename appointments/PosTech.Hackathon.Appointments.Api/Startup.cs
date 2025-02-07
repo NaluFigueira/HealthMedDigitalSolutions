@@ -1,4 +1,6 @@
 ﻿using System.Text;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +18,10 @@ public class Startup(IConfiguration configuration)
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddControllers();
+        services.AddControllers().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new JsonDateTimeConverter());
+        });
         services.AddDbContext<AppointmentsDBContext>(options =>
         {
             var connectionString = _configuration.GetConnectionString("DefaultConnection");
