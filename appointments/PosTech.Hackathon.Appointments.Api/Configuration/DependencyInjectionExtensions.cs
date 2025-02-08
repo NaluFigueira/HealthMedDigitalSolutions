@@ -23,6 +23,11 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IRejectAppointmentUseCase, RejectAppointmentUseCase>();
         services.AddScoped<IAcceptAppointmentUseCase, AcceptAppointmentUseCase>();
 
+        // Repositories
+        services.AddScoped<IPatientRepository, PatientRepository>();
+        services.AddScoped<IDoctorRepository, DoctorRepository>();
+        services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+        services.AddScoped<IAvailabilitySlotRepository, AvailabilitySlotRepository>();
 
         return services;
     }
