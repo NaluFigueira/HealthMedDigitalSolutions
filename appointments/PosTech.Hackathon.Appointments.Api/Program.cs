@@ -28,5 +28,6 @@ app.MapAppointmentsEndpoints();
 app.MapDoctorEndpoints();
 app.MapScheduleAppointmentEndpoints();
 app.MapDoctorEndpoints();
+app.MapDoctorsAppointmentEndpoints();
 
 app.Run();
