@@ -1,6 +1,4 @@
 ﻿using System.Text;
-using System.Text.Json.Serialization;
-using System.Text.Json;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -60,6 +58,8 @@ public class Startup(IConfiguration configuration)
                     Array.Empty<string>()
                 }
             });
+
+            c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
         });
 
         services.AddLogging();
