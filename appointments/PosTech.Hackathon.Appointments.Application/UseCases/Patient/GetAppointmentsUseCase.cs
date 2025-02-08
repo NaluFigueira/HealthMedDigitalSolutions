@@ -1,18 +1,17 @@
 ﻿using FluentResults;
 
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 using PosTech.Hackathon.Appointments.Application.DTOs;
 using PosTech.Hackathon.Appointments.Application.Interfaces.UseCases;
 using PosTech.Hackathon.Appointments.Application.Validators;
-using PosTech.Hackathon.Appointments.Infra.Context;
+using PosTech.Hackathon.Appointments.Infra.Interfaces;
 
 namespace PosTech.Hackathon.Appointments.Application.UseCases.Patient;
 
-public class GetAppointmentsUseCase(AppointmentsDBContext context, ILogger<GetAppointmentsUseCase> logger) : IGetAppointmentsUseCase
+public class GetAppointmentsUseCase(IAppointmentRepository repository, ILogger<GetAppointmentsUseCase> logger) : IGetAppointmentsUseCase
 {
-    private readonly AppointmentsDBContext _context = context;
+    private readonly IAppointmentRepository _repository = repository;
     private readonly ILogger<GetAppointmentsUseCase> _logger = logger;
 
     public async Task<Result<List<AppointmentDTO>>> ExecuteAsync(GetAppointmentsDTO request)
@@ -28,9 +27,7 @@ public class GetAppointmentsUseCase(AppointmentsDBContext context, ILogger<GetAp
 
         try
         {
-            var appointments = await _context.Appointments
-                .Where(a => a.PatientId == request.PatientId)
-                .ToListAsync();
+            var appointments = await _repository.GetAppointmentsByPatientIdAsync(request.PatientId);
 
             var appointmentDTOs = appointments
                 .Select(a => new AppointmentDTO

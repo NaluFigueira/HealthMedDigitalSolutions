@@ -1,19 +1,18 @@
 ﻿using FluentResults;
 
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 using PosTech.Hackathon.Appointments.Application.DTOs;
 using PosTech.Hackathon.Appointments.Application.Interfaces.UseCases;
 using PosTech.Hackathon.Appointments.Application.Validators;
 using PosTech.Hackathon.Appointments.Domain.Entities;
-using PosTech.Hackathon.Appointments.Infra.Context;
+using PosTech.Hackathon.Appointments.Infra.Interfaces;
 
 namespace PosTech.Hackathon.Appointments.Application.UseCases.AvailabilitySlots;
 
-public class AddAvailabilitySlotsUseCase(AppointmentsDBContext context, ILogger<AddAvailabilitySlotsUseCase> logger) : IAddAvailabilitySlotsUseCase
+public class AddAvailabilitySlotsUseCase(IAvailabilitySlotRepository repository, ILogger<AddAvailabilitySlotsUseCase> logger) : IAddAvailabilitySlotsUseCase
 {
-    private readonly AppointmentsDBContext _context = context;
+    private readonly IAvailabilitySlotRepository _repository = repository;
     private readonly ILogger<AddAvailabilitySlotsUseCase> _logger = logger;
 
     public async Task<Result> ExecuteAsync(AddAvailabilitySlotsDTO request)
@@ -28,11 +27,7 @@ public class AddAvailabilitySlotsUseCase(AppointmentsDBContext context, ILogger<
         }
 
         // Check if any of the time slots already exist in the database
-        var existingSlots = await _context.AvailabilitySlots
-            .Where(slot => request.AvailabilitySlots
-                    .Select(r => r.Slot)
-                    .Contains(slot.Slot))
-            .ToListAsync();
+        var existingSlots = await _repository.GetExistingSlotsAsync(request.AvailabilitySlots.Select(r => r.Slot).ToList());
 
         if (existingSlots.Count != 0)
         {
@@ -53,8 +48,7 @@ public class AddAvailabilitySlotsUseCase(AppointmentsDBContext context, ILogger<
                 })
                 .ToList();
 
-            await _context.AvailabilitySlots.AddRangeAsync(availabilitySlots);
-            await _context.SaveChangesAsync();
+            await _repository.AddAvailabilitySlotsAsync(availabilitySlots);
 
             return Result.Ok();
         }

@@ -1,18 +1,17 @@
 ﻿using FluentResults;
 
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 using PosTech.Hackathon.Appointments.Application.DTOs;
 using PosTech.Hackathon.Appointments.Application.Interfaces.UseCases;
 using PosTech.Hackathon.Appointments.Application.Validators;
-using PosTech.Hackathon.Appointments.Infra.Context;
+using PosTech.Hackathon.Appointments.Infra.Interfaces;
 
 namespace PosTech.Hackathon.Appointments.Application.UseCases.Patient;
 
-public class CancelAppointmentUseCase(AppointmentsDBContext context, ILogger<CancelAppointmentUseCase> logger) : ICancelAppointmentUseCase
+public class CancelAppointmentUseCase(IAppointmentRepository repository, ILogger<CancelAppointmentUseCase> logger) : ICancelAppointmentUseCase
 {
-    private readonly AppointmentsDBContext _context = context;
+    private readonly IAppointmentRepository _repository = repository;
     private readonly ILogger<CancelAppointmentUseCase> _logger = logger;
 
     public async Task<Result> ExecuteAsync(CancelAppointmentDTO request)
@@ -28,16 +27,14 @@ public class CancelAppointmentUseCase(AppointmentsDBContext context, ILogger<Can
 
         try
         {
-            var appointment = await _context.Appointments
-                .FirstOrDefaultAsync(a => a.Id == request.AppointmentId && a.PatientId == request.PatientId);
+            var appointment = await _repository.GetAppointmentAsync(request.AppointmentId, request.PatientId);
 
             if (appointment == null)
             {
                 return Result.Fail("Appointment not found.");
             }
 
-            _context.Appointments.Remove(appointment);
-            await _context.SaveChangesAsync();
+            await _repository.RemoveAppointmentAsync(appointment);
 
             return Result.Ok();
         }

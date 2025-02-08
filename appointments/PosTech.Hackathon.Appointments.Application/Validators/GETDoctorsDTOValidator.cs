@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using FluentValidation;
-using PosTech.Hackathon.Appointments.Application.DTOs;
+﻿using FluentValidation;
 
 namespace PosTech.Hackathon.Appointments.Application.Validators;
-public class GETDoctorsDTOValidator : AbstractValidator<string>
+
+public class GetDoctorsDTOValidator : AbstractValidator<string>
 {
-    public GETDoctorsDTOValidator()
+    public GetDoctorsDTOValidator()
     {
         RuleFor(dto => dto)
         .NotEmpty()
         .WithMessage("Speciality is required.");
     }
-
 }

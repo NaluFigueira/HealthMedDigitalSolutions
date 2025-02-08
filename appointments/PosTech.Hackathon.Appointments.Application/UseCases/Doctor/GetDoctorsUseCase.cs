@@ -25,7 +25,7 @@ public class GetDoctorsUseCase(AppointmentsDBContext context, ILogger<GetDoctors
 
     public async Task<Result<List<GetDoctorsDTO>>> ExecuteAsync(string speciality)
     {
-        var validationResult = new GETDoctorsDTOValidator().Validate(speciality);
+        var validationResult = new GetDoctorsDTOValidator().Validate(speciality);
 
         if (!validationResult.IsValid)
         {
