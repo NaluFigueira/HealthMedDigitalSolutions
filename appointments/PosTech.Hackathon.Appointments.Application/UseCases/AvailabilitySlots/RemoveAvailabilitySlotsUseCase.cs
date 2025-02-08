@@ -1,18 +1,17 @@
 ﻿using FluentResults;
 
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 using PosTech.Hackathon.Appointments.Application.DTOs;
 using PosTech.Hackathon.Appointments.Application.Interfaces.UseCases;
 using PosTech.Hackathon.Appointments.Application.Validators;
-using PosTech.Hackathon.Appointments.Infra.Context;
+using PosTech.Hackathon.Appointments.Infra.Interfaces;
 
 namespace PosTech.Hackathon.Appointments.Application.UseCases.AvailabilitySlots;
 
-public class RemoveAvailabilitySlotsUseCase(AppointmentsDBContext context, ILogger<RemoveAvailabilitySlotsUseCase> logger) : IRemoveAvailabilitySlotsUseCase
+public class RemoveAvailabilitySlotsUseCase(IAvailabilitySlotRepository repository, ILogger<RemoveAvailabilitySlotsUseCase> logger) : IRemoveAvailabilitySlotsUseCase
 {
-    private readonly AppointmentsDBContext _context = context;
+    private readonly IAvailabilitySlotRepository _repository = repository;
     private readonly ILogger<RemoveAvailabilitySlotsUseCase> _logger = logger;
 
     public async Task<Result> ExecuteAsync(RemoveAvailabilitySlotsDTO request)
@@ -28,17 +27,15 @@ public class RemoveAvailabilitySlotsUseCase(AppointmentsDBContext context, ILogg
 
         try
         {
-            var slot = await _context.AvailabilitySlots
-                .FirstOrDefaultAsync(s => s.Id == request.SlotId
-                && s.DoctorId == request.DoctorId);
+            var slot = await _repository.GetAvailabilitySlotAsync(request.SlotId, request.DoctorId);
 
             if (slot == null)
             {
                 return Result.Fail("Slot not found.");
             }
 
-            _context.AvailabilitySlots.Remove(slot);
-            await _context.SaveChangesAsync();
+            _repository.RemoveAvailabilitySlot(slot);
+            await _repository.SaveChangesAsync();
 
             return Result.Ok();
         }
