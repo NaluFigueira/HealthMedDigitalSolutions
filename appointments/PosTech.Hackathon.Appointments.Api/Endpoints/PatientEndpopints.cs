@@ -20,7 +20,7 @@ public static class AppointmentsEndpoints
             .WithOpenApi(operation => new(operation)
             {
                 Tags = tags,
-                Summary = "Create a patient's appointment with a doctor"
+                Summary = "Fetch a patient's appointment with a doctor"
             })
             .Produces(StatusCodes.Status201Created)
             .Produces<string>(StatusCodes.Status400BadRequest)
