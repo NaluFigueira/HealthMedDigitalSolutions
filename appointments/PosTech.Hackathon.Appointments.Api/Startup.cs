@@ -58,8 +58,6 @@ public class Startup(IConfiguration configuration)
                     Array.Empty<string>()
                 }
             });
-
-            c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
         });
 
         services.AddLogging();

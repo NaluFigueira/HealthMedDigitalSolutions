@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using FluentResults;
-
-using FluentValidation;
+﻿using FluentResults;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -37,9 +29,9 @@ public class GetAvailabilitySlotsUseCase(AppointmentsDBContext context, ILogger<
         {
             var doctor = await _context.Doctors
                 .Where(a => a.Id == doctorId).FirstOrDefaultAsync();
-            
+
             var availabilitySlots = await _context.AvailabilitySlots
-                .Where(x => x.DoctorId == doctorId)
+                .Where(x => x.DoctorId == doctorId && x.IsAvailable == true)
                 .ToListAsync();
 
             var availabilitySlotsList = new List<AvailabilitySlotDTO>();
