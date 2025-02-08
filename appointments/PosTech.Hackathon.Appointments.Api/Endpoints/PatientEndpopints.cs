@@ -55,7 +55,7 @@ public static class AppointmentsEndpoints
         return await EndpointUtils.CallUseCase(async () =>
         {
             var result = await getAppointmentsUseCase.ExecuteAsync(dto);
-            return result.IsSuccess ? Results.Created() : Results.BadRequest(string.Join(Environment.NewLine, result.Errors));
+            return result.IsSuccess ? Results.Ok(result) : Results.BadRequest(string.Join(Environment.NewLine, result.Errors));
         });
     }
 
